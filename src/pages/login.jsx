@@ -22,16 +22,21 @@ export default function LoginPage() {
 
   async function onSubmit(data) {
     setIsSubmitting(true);
-
     try {
       await handleLogin(data.email, data.password, setUser, setAccount);
-      //updateAccount();
       router.push("/");
     } catch (error) {
-      setError("root.data", {
-        type: "manual",
-        message: "Ups! Verifica que tus datos sean los correctos",
-      });
+      if (error.message === "Invalid credentials") {
+        setError("root.data", {
+          type: "manual",
+          message: "Ups! Verifica que tus datos sean los correctos",
+        });
+      } else {
+        setError("root.data", {
+          type: "manual",
+          message: "Ups! Hubo un error al iniciar sesión, intentelo mas tarde",
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
