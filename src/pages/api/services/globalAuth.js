@@ -8,7 +8,7 @@ export async function handleLogin(email, password, setUser, setAccount) {
     }
     localStorage.setItem("access-token", userData.token);
     localStorage.setItem("access-id", userData.userId);
-    const userInfo = await getUser(userData.userId);
+    /*const userInfo = await getUser(userData.userId);
     //console.log(JSON.stringify(userInfo, null, 2));
     let accountInfo = JSON.stringify(userInfo, null, 2);
     accountInfo = userInfo?.data?.user;
@@ -20,7 +20,7 @@ export async function handleLogin(email, password, setUser, setAccount) {
       role: accountInfo.role,
       birthday: accountInfo.birthday,
       profilePic: accountInfo.profilePic,
-    });
+    });*/
     sessionStorage.setItem("user", JSON.stringify(userInfo?.data.user));
     setUser(userData);
   } catch (error) {
