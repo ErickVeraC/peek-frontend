@@ -46,7 +46,6 @@ export async function getUser(userId) {
 }
 
 export async function loginUser(email, password) {
-  alert("entra");
   try {
     const response = await fetch(`${api}/auth/login`, {
       method: "POST",
@@ -56,18 +55,22 @@ export async function loginUser(email, password) {
       body: JSON.stringify({ email, password }),
     });
 
-    alert(JSON.stringify(response));
-
-    /*if (!response.ok) {
-      throw new Error("Error logging in");
-    }*/
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("Invalid credentials");
+      }
+      throw new Error("Server error");
+    }
 
     const data = await response.json();
+    const token = data?.data?.token;
+    if (!token) {
+      throw new Error("Invalid response");
+    }
 
-    const token = data?.data || false;
-    return token;
+    return { token, userId: data?.data?.userId };
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Hubo un error en loginUser:", error.message);
     throw error;
   }
 }
