@@ -12,11 +12,14 @@ const schema = yup.object().shape({
   date: yup.date().required("Date is required"),
   hour: yup.string().required("Hour is required"),
   reason: yup.string().required("Reason is required"),
-  petId: yup.string().required("Pet ID is required"),
   vetId: yup.string().required("Vet ID is required"),
 });
 
-export default function AddAppointmentForm({ onClose, onAppointmentAdded }) {
+export default function AddAppointmentForm({
+  onClose,
+  onAppointmentAdded,
+  petId,
+}) {
   const {
     register,
     handleSubmit,
@@ -30,7 +33,7 @@ export default function AddAppointmentForm({ onClose, onAppointmentAdded }) {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      await createAppointment(data);
+      await createAppointment({ ...data, petId });
       toast.success("Cita creada con éxito");
       if (typeof onAppointmentAdded === "function") {
         onAppointmentAdded();
@@ -86,17 +89,6 @@ export default function AddAppointmentForm({ onClose, onAppointmentAdded }) {
             {errors.reason && (
               <p className="text-red-500 text-xs mt-1">
                 {errors.reason.message}
-              </p>
-            )}
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Pet ID
-            </label>
-            <input {...register("petId")} className="mt-1 block w-full" />
-            {errors.petId && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.petId.message}
               </p>
             )}
           </div>

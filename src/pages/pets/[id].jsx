@@ -20,6 +20,7 @@ import AddVaccineForm from "../AddVaccineForm";
 import AddAppointmentForm from "../AddAppointmentForm";
 
 import { getPet } from "../api/services/pets/crudPet";
+import { createAppointment } from "../api/services/petsFile/appointmentService";
 
 export default function Mascotas() {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,6 +31,8 @@ export default function Mascotas() {
   const { id } = router.query;
   const [isVaccineModalOpen, setIsVaccineModalOpen] = useState(false);
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
+  const [vaccines, setVaccines] = useState([]);
+  const [appointments, setAppointments] = useState([]);
 
   useEffect(() => {
     if (!id) return;
@@ -49,6 +52,28 @@ export default function Mascotas() {
 
   const handleAppointmentModal = () => {
     setIsAppointmentModalOpen(!isAppointmentModalOpen);
+  };
+
+  const handleVaccineAdded = async (newVaccine) => {
+    try {
+      const updatedVaccines = await addVaccine(pet._id, newVaccine);
+      setVaccines(updatedVaccines);
+    } catch (error) {
+      console.error("Error adding vaccine:", error);
+    }
+  };
+
+  const handleAppointmentAdded = async (newAppointment) => {
+    try {
+      const updatedAppointment = await createAppointment({
+        ...newAppointment,
+        petId: pet._id,
+      });
+      // Aquí puedes actualizar el estado de las citas si es necesario
+      console.log("Appointment added:", updatedAppointment);
+    } catch (error) {
+      console.error("Error adding appointment:", error);
+    }
   };
 
   const handleModal = () => {
@@ -145,6 +170,7 @@ export default function Mascotas() {
                 <AddAppointmentForm
                   onClose={handleAppointmentModal}
                   onAppointmentAdded={handleAppointmentAdded}
+                  petId={pet._id} // Pasar el ID de la mascota al formulario de cita
                 />
               )}
             </section>

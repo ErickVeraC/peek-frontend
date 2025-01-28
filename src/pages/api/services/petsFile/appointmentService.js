@@ -18,6 +18,8 @@ export async function createAppointment(appointmentData) {
 
     const data = await response.json();
 
+    console.log("Backend response:", data);
+
     if (!response.ok) {
       const errorMessage = data.message || "Error creating appointment.";
       throw new Error(errorMessage);
