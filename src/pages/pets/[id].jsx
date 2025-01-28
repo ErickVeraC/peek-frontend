@@ -14,6 +14,10 @@ import PetName from "@/components/PetName";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import EditPetForm from "./editPetForm";
 import DelePet from "./deletePet";
+import ButtonJoinNow from "@/components/ButtonJoinNow";
+
+import AddVaccineForm from "../AddVaccineForm";
+import AddAppointmentForm from "../AddAppointmentForm";
 
 import { getPet } from "../api/services/pets/crudPet";
 
@@ -24,6 +28,8 @@ export default function Mascotas() {
   const [pet, setPet] = useState({});
   const router = useRouter();
   const { id } = router.query;
+  const [isVaccineModalOpen, setIsVaccineModalOpen] = useState(false);
+  const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -36,6 +42,14 @@ export default function Mascotas() {
         console.log(error);
       });
   }, [id]);
+
+  const handleVaccineModal = () => {
+    setIsVaccineModalOpen(!isVaccineModalOpen);
+  };
+
+  const handleAppointmentModal = () => {
+    setIsAppointmentModalOpen(!isAppointmentModalOpen);
+  };
 
   const handleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -112,6 +126,28 @@ export default function Mascotas() {
                 </span>
               </div>
             </div>
+            <section className="flex flex-col md:flex-row gap-2 p-2">
+              <ButtonJoinNow onClick={handleVaccineModal}>
+                Agregar Vacuna
+              </ButtonJoinNow>
+              <ButtonJoinNow onClick={handleAppointmentModal}>
+                Agregar Cita
+              </ButtonJoinNow>
+
+              {isVaccineModalOpen && (
+                <AddVaccineForm
+                  onClose={handleVaccineModal}
+                  onVaccineAdded={handleVaccineAdded}
+                />
+              )}
+
+              {isAppointmentModalOpen && (
+                <AddAppointmentForm
+                  onClose={handleAppointmentModal}
+                  onAppointmentAdded={handleAppointmentAdded}
+                />
+              )}
+            </section>
           </div>
         </div>
       </div>
