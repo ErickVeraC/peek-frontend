@@ -20,7 +20,6 @@ import AddVaccineForm from "../AddVaccineForm";
 import AddAppointmentForm from "../AddAppointmentForm";
 
 import { getPet } from "../api/services/pets/crudPet";
-import { createAppointment } from "../api/services/petsFile/appointmentService";
 
 export default function Mascotas() {
   const [isLoading, setIsLoading] = useState(true);
@@ -109,7 +108,7 @@ export default function Mascotas() {
                 <ProfileImagePet image={pet.picture} />
               </div>
               <div className="w-full bg-white shadow-md rounded-2xl p-9 text-black">
-                <Calendar />
+                <Calendar petId={id} />
               </div>
             </div>
           </div>
