@@ -44,10 +44,6 @@ export default function Mascotas() {
       });
   }, [id]);
 
-  const handleVaccineModal = () => {
-    setIsVaccineModalOpen(!isVaccineModalOpen);
-  };
-
   const handleAppointmentModal = () => {
     setIsAppointmentModalOpen(!isAppointmentModalOpen);
     if (!isAppointmentModalOpen) {
@@ -60,13 +56,16 @@ export default function Mascotas() {
         });
     }
   };
-
-  const handleVaccineAdded = async (newVaccine) => {
-    try {
-      const updatedVaccines = await addVaccine(pet._id, newVaccine);
-      setVaccines(updatedVaccines);
-    } catch (error) {
-      console.error("Error adding vaccine:", error);
+  const handleVaccineModal = () => {
+    setIsVaccineModalOpen(!isVaccineModalOpen);
+    if (!isVaccineModalOpen) {
+      getPet(id)
+        .then((data) => {
+          setPet(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching pet data:", error);
+        });
     }
   };
 
@@ -154,10 +153,7 @@ export default function Mascotas() {
               </ButtonJoinNow>
 
               {isVaccineModalOpen && (
-                <AddVaccineForm
-                  onClose={handleVaccineModal}
-                  onVaccineAdded={handleVaccineAdded}
-                />
+                <AddVaccineForm onClose={handleVaccineModal} />
               )}
 
               {isAppointmentModalOpen && (
