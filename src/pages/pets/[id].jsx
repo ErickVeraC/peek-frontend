@@ -32,7 +32,6 @@ export default function Mascotas() {
   const [isVaccineModalOpen, setIsVaccineModalOpen] = useState(false);
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
   const [vaccines, setVaccines] = useState([]);
-  const [appointments, setAppointments] = useState([]);
 
   useEffect(() => {
     if (!id) return;
@@ -52,6 +51,15 @@ export default function Mascotas() {
 
   const handleAppointmentModal = () => {
     setIsAppointmentModalOpen(!isAppointmentModalOpen);
+    if (!isAppointmentModalOpen) {
+      getPet(id)
+        .then((data) => {
+          setPet(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching pet data:", error);
+        });
+    }
   };
 
   const handleVaccineAdded = async (newVaccine) => {
@@ -60,19 +68,6 @@ export default function Mascotas() {
       setVaccines(updatedVaccines);
     } catch (error) {
       console.error("Error adding vaccine:", error);
-    }
-  };
-
-  const handleAppointmentAdded = async (newAppointment) => {
-    try {
-      const updatedAppointment = await createAppointment({
-        ...newAppointment,
-        petId: pet._id,
-      });
-      // Aquí puedes actualizar el estado de las citas si es necesario
-      console.log("Appointment added:", updatedAppointment);
-    } catch (error) {
-      console.error("Error adding appointment:", error);
     }
   };
 
@@ -169,7 +164,6 @@ export default function Mascotas() {
               {isAppointmentModalOpen && (
                 <AddAppointmentForm
                   onClose={handleAppointmentModal}
-                  onAppointmentAdded={handleAppointmentAdded}
                   petId={pet._id} // Pasar el ID de la mascota al formulario de cita
                 />
               )}
