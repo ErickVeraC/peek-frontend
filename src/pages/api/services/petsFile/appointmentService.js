@@ -7,6 +7,8 @@ export async function createAppointment(appointmentData) {
       throw new Error("No access token found");
     }
 
+    console.log("Sending appointment data:", appointmentData);
+
     const response = await fetch(`${api}/appointments`, {
       method: "POST",
       headers: {

@@ -6,7 +6,6 @@ import * as yup from "yup";
 import { toast } from "sonner";
 import { useState } from "react";
 import { MdClose } from "react-icons/md";
-import PrimaryButton from "@/components/PrimaryButton";
 
 const schema = yup.object().shape({
   date: yup.date().required("Date is required"),
@@ -32,8 +31,16 @@ export default function AddAppointmentForm({
 
   const onSubmit = async (data) => {
     setLoading(true);
+    const formattedData = {
+      ...data,
+      date: new Date(data.date).toISOString(),
+      hour: data.hour,
+      petId,
+    };
+    console.log("Form data:", formattedData);
     try {
-      await createAppointment({ ...data, petId });
+      const appointment = await createAppointment(formattedData);
+      console.log("Appointment created:", appointment);
       toast.success("Cita creada con éxito");
       if (typeof onAppointmentAdded === "function") {
         onAppointmentAdded();
@@ -56,56 +63,84 @@ export default function AddAppointmentForm({
     >
       <div className="bg-white p-6 rounded-lg shadow-2xl w-96 relative">
         <button onClick={onClose} className="absolute top-2 right-2">
-          <MdClose size={24} />
+          <MdClose className="text-2xl m-auto text-congress-950" />
         </button>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Date
-            </label>
-            <input
-              type="date"
-              {...register("date")}
-              className="mt-1 block w-full"
-            />
-            {errors.date && (
-              <p className="text-red-500 text-xs mt-1">{errors.date.message}</p>
+        <h2 className="text-congress-950 text-2xl text-center mb-4">
+          Agrega tu cita
+        </h2>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full flex flex-col gap-4 mt-4"
+        >
+          <label className="w-full text-left text-congress-950">Date</label>
+          <input
+            type="date"
+            {...register("date")}
+            className={clsx(
+              "w-full rounded-md border border-gray-200 p-2 text-congress-950",
+              {
+                "border-red-500": errors.date,
+              }
             )}
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Hour
-            </label>
-            <input {...register("hour")} className="mt-1 block w-full" />
-            {errors.hour && (
-              <p className="text-red-500 text-xs mt-1">{errors.hour.message}</p>
+          />
+          {errors.date && (
+            <span className="text-red-500">{errors.date.message}</span>
+          )}
+
+          <label className="w-full text-left text-congress-950">Hour</label>
+          <input
+            type="time"
+            {...register("hour")}
+            className={clsx(
+              "w-full rounded-md border border-gray-200 p-2 text-congress-950",
+              {
+                "border-red-500": errors.hour,
+              }
             )}
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Reason
-            </label>
-            <input {...register("reason")} className="mt-1 block w-full" />
-            {errors.reason && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.reason.message}
-              </p>
+          />
+          {errors.hour && (
+            <span className="text-red-500">{errors.hour.message}</span>
+          )}
+
+          <label className="w-full text-left text-congress-950">Reason</label>
+          <input
+            type="text"
+            {...register("reason")}
+            className={clsx(
+              "w-full rounded-md border border-gray-200 p-2 text-congress-950",
+              {
+                "border-red-500": errors.reason,
+              }
             )}
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Vet ID
-            </label>
-            <input {...register("vetId")} className="mt-1 block w-full" />
-            {errors.vetId && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.vetId.message}
-              </p>
+          />
+          {errors.reason && (
+            <span className="text-red-500">{errors.reason.message}</span>
+          )}
+
+          <label className="w-full text-left text-congress-950">Vet ID</label>
+          <input
+            type="text"
+            {...register("vetId")}
+            className={clsx(
+              "w-full rounded-md border border-gray-200 p-2 text-congress-950",
+              {
+                "border-red-500": errors.vetId,
+              }
             )}
+          />
+          {errors.vetId && (
+            <span className="text-red-500">{errors.vetId.message}</span>
+          )}
+
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-4 py-2 rounded-md"
+              disabled={loading}
+            >
+              {loading ? "Creating..." : "Create Appointment"}
+            </button>
           </div>
-          <PrimaryButton type="submit" loading={loading}>
-            Agregar Cita
-          </PrimaryButton>
         </form>
       </div>
     </section>
