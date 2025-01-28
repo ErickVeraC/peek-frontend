@@ -26,7 +26,7 @@ export default function DashboardVets() {
                 <h2>Médico veterinario</h2>
                 <h2>CED. PROF. 1265689894</h2>
               </div>
-              <div class=" size-6 bg-green-500 rounded-full"></div>
+              <div className=" size-6 bg-green-500 rounded-full"></div>
             </div>
           </div>
           <div className="min-h-16 lg:h-80 bg-white shadow-md rounded-2xl p-6">
