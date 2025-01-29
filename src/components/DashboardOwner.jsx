@@ -2,9 +2,47 @@ import DashboardLayout from "@/Layouts/DashboardLayout";
 import Pets from "@/pages/pets";
 import { MdPets } from "react-icons/md";
 import { useAccount } from "@/context/AccountContext";
+import { useEffect, useState } from "react";
+import { MdCalendarToday } from "react-icons/md";
+import { getAppointmentsByPetId } from "../pages/api/services/petsFile/appointmentService";
 
 export default function DashboardOwner() {
   const { account } = useAccount();
+  const [appointments, setAppointments] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const appointmentsPerPage = 5;
+
+  useEffect(() => {
+    if (!account.petId) {
+      console.error("petId is undefined");
+      return;
+    }
+
+    async function fetchAppointments() {
+      try {
+        const appointmentsData = await getAppointmentsByPetId(account.petId);
+        const sortedAppointments = appointmentsData.sort(
+          (a, b) => new Date(a.date) - new Date(b.date)
+        );
+        setAppointments(sortedAppointments);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+      }
+    }
+
+    fetchAppointments();
+  }, [account.petId]);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const indexOfLastAppointment = currentPage * appointmentsPerPage;
+  const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
+  const currentAppointments = appointments.slice(
+    indexOfFirstAppointment,
+    indexOfLastAppointment
+  );
 
   return (
     <DashboardLayout>
@@ -14,7 +52,34 @@ export default function DashboardOwner() {
             <h2 className="text-congress-950">{account.name}</h2>
           </div>
           <div className="min-h-16 lg:h-80 bg-white shadow-md rounded-2xl p-6">
-            <h2 className="text-congress-950">Proximas citas</h2>
+            <div className="text-congress-700 flex flex-col items-center justify-center gap-3">
+              <MdCalendarToday className="h-8 w-8" />
+              <span className="text-neutral-700 text-xs">Próximas Citas</span>
+            </div>
+            <ul>
+              {currentAppointments.map((appointment) => (
+                <li key={appointment._id}>
+                  {new Date(appointment.date).toLocaleDateString()}{" "}
+                  {appointment.hour}: {appointment.reason}
+                </li>
+              ))}
+            </ul>
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="px-4 py-2 mx-1 bg-gray-200 rounded disabled:opacity-50"
+              >
+                Anterior
+              </button>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={indexOfLastAppointment >= appointments.length}
+                className="px-4 py-2 mx-1 bg-gray-200 rounded disabled:opacity-50"
+              >
+                Siguiente
+              </button>
+            </div>
           </div>
         </div>
         <div className="grid grid-cols-subgrid gap-4 md:grid-cols-2  lg:col-span-9 xl:col-span-10 lg:grid-cols-3 lg:content-center">
