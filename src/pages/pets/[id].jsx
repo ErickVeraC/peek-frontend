@@ -30,7 +30,6 @@ export default function Mascotas() {
   const { id } = router.query;
   const [isVaccineModalOpen, setIsVaccineModalOpen] = useState(false);
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
-  const [vaccines, setVaccines] = useState([]);
 
   useEffect(() => {
     if (!id) return;
@@ -44,10 +43,6 @@ export default function Mascotas() {
       });
   }, [id]);
 
-  const handleVaccineModal = () => {
-    setIsVaccineModalOpen(!isVaccineModalOpen);
-  };
-
   const handleAppointmentModal = () => {
     setIsAppointmentModalOpen(!isAppointmentModalOpen);
     if (!isAppointmentModalOpen) {
@@ -60,13 +55,16 @@ export default function Mascotas() {
         });
     }
   };
-
-  const handleVaccineAdded = async (newVaccine) => {
-    try {
-      const updatedVaccines = await addVaccine(pet._id, newVaccine);
-      setVaccines(updatedVaccines);
-    } catch (error) {
-      console.error("Error adding vaccine:", error);
+  const handleVaccineModal = () => {
+    setIsVaccineModalOpen(!isVaccineModalOpen);
+    if (!isVaccineModalOpen) {
+      getPet(id)
+        .then((data) => {
+          setPet(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching pet data:", error);
+        });
     }
   };
 
@@ -154,16 +152,13 @@ export default function Mascotas() {
               </ButtonJoinNow>
 
               {isVaccineModalOpen && (
-                <AddVaccineForm
-                  onClose={handleVaccineModal}
-                  onVaccineAdded={handleVaccineAdded}
-                />
+                <AddVaccineForm onClose={handleVaccineModal} petId={pet._id} />
               )}
 
               {isAppointmentModalOpen && (
                 <AddAppointmentForm
                   onClose={handleAppointmentModal}
-                  petId={pet._id} // Pasar el ID de la mascota al formulario de cita
+                  petId={pet._id}
                 />
               )}
             </section>
