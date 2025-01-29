@@ -86,3 +86,35 @@ export async function deletePet(id) {
 
   return { message: "Pet deleted successfully" };
 }
+
+export async function getAllPetsByVet() {
+  try {
+    const token = localStorage.getItem("access-token");
+    const storedId = localStorage.getItem("access-id");
+
+    if (!token) {
+      throw new Error("No access token found");
+    }
+
+    const response = await fetch(`${api}/pets/vet/${storedId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      const errorMessage = data.message || "Error fetching pets.";
+      throw new Error(errorMessage);
+    }
+    // Actualizar el token en localStorage si se proporciona un nuevo token
+    if (data.newToken) {
+      localStorage.setItem("access-token", data.newToken);
+    }
+    return data.data.pets;
+  } catch (error) {
+    console.error("Error getAllPets:", error.message);
+    throw error;
+  }
+}
