@@ -30,7 +30,6 @@ export default function Mascotas() {
   const { id } = router.query;
   const [isVaccineModalOpen, setIsVaccineModalOpen] = useState(false);
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
-  const [vaccines, setVaccines] = useState([]);
 
   useEffect(() => {
     if (!id) return;
@@ -153,13 +152,13 @@ export default function Mascotas() {
               </ButtonJoinNow>
 
               {isVaccineModalOpen && (
-                <AddVaccineForm onClose={handleVaccineModal} />
+                <AddVaccineForm onClose={handleVaccineModal} petId={pet._id} />
               )}
 
               {isAppointmentModalOpen && (
                 <AddAppointmentForm
                   onClose={handleAppointmentModal}
-                  petId={pet._id} // Pasar el ID de la mascota al formulario de cita
+                  petId={pet._id}
                 />
               )}
             </section>

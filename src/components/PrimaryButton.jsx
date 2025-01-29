@@ -3,7 +3,7 @@ export default function PrimaryButton({ label, onClick, isSubmitting }) {
     <button
       disabled={isSubmitting}
       onClick={onClick}
-      className="text-[#ffffff] w-full text-[16px] bg-[#0E2139] block h-[44px] border border-[#0E2139] rounded-[5px] hover:bg-[#0E2139] hover:text-[#ffffff] hover:border-[#0E2139]"
+      className="text-white w-full text-[16px] bg-[#0E2139] block h-[44px] border border-[#0E2139] rounded-[5px] hover:bg-[#0E2139] hover:text-white hover:border-[#0E2139]"
     >
       {isSubmitting ? (
         <div className="flex justify-center items-center">

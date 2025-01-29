@@ -39,11 +39,9 @@ export default function AddVaccineForm({ onClose, onVaccineAdded, petId }) {
       ...data,
       petId,
     };
-    console.log("Form data:", formattedData);
     try {
       const vaccine = await createVaccine(formattedData);
-      console.log("Vaccine created:", vaccine);
-      toast.success("Vacuna creada con éxito");
+      toast.success("Vacuna creada con éxito", vaccine);
       if (typeof onVaccineAdded === "function") {
         onVaccineAdded();
       }
@@ -91,9 +89,7 @@ export default function AddVaccineForm({ onClose, onVaccineAdded, petId }) {
           <label className="w-full text-left text-congress-950">Comments</label>
           <input
             {...register("comments")}
-            className={clsx(
-              "w-full rounded-md border border-gray-200 p-2 text-congress-950"
-            )}
+            className="w-full rounded-md border border-gray-200 p-2 text-congress-950"
           />
 
           <label className="w-full text-left text-congress-950">
@@ -128,7 +124,7 @@ export default function AddVaccineForm({ onClose, onVaccineAdded, petId }) {
 
           <div className="flex justify-end">
             <PrimaryButton type="submit" loading={loading}>
-              Agregar Vacuna
+              {loading ? "Creating..." : "Create Vaccine"}
             </PrimaryButton>
           </div>
         </form>

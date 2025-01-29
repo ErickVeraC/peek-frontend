@@ -46,10 +46,18 @@ export default function Calendar({ petId }) {
         <span className="text-neutral-700 text-xs">Próximas Citas</span>
       </div>
       <ul>
-        {currentAppointments.map((appointment) => (
-          <li key={appointment._id}>
-            {new Date(appointment.date).toLocaleDateString()} {appointment.hour}
-            : {appointment.reason}
+        {currentAppointments.map((appointment, index) => (
+          <li
+            key={appointment._id}
+            className={`flex justify-between p-2 ${
+              index % 2 === 0 ? "bg-gray-100" : ""
+            }`}
+          >
+            <span>
+              {new Date(appointment.date).toLocaleDateString()}{" "}
+              {appointment.hour}
+            </span>
+            <span className="ml-4">{appointment.reason}</span>
           </li>
         ))}
       </ul>
