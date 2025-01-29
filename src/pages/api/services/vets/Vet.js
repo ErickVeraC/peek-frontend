@@ -23,3 +23,27 @@ export async function createVet(vetData) {
     throw error;
   }
 }
+
+export async function getAllVets(accessToken) {
+  try {
+    const response = await fetch(`${api}/vets`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errorMessage = data.message || "Error.";
+      throw new Error(errorMessage);
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching vets:", error.message);
+    throw error;
+  }
+}

@@ -2,9 +2,10 @@ import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { createVaccine } from "@/pages/api/services/petsFile/vaccinesService";
+import { getAllVets } from "./api/services/vets/Vet";
 import * as yup from "yup";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MdClose } from "react-icons/md";
 import PrimaryButton from "@/components/PrimaryButton";
 
@@ -32,12 +33,33 @@ export default function AddVaccineForm({ onClose, onVaccineAdded, petId }) {
   });
 
   const [loading, setLoading] = useState(false);
+  const [vets, setVets] = useState([]);
+  const [selectedVetId, setSelectedVetId] = useState(null);
+
+  useEffect(() => {
+    async function fetchVets() {
+      try {
+        const vetsData = await getAllVets();
+        console.log("Vets Data:", vetsData); // Agregar console.log para verificar los datos
+        setVets(vetsData.data.vets);
+      } catch (error) {
+        console.error("Error fetching vets:", error);
+      }
+    }
+
+    fetchVets();
+  }, []);
+
+  const handleVetSelect = (event) => {
+    setSelectedVetId(event.target.value);
+  };
 
   const onSubmit = async (data) => {
     setLoading(true);
     const formattedData = {
       ...data,
       petId,
+      vet: selectedVetId,
     };
     try {
       const vaccine = await createVaccine(formattedData);
@@ -95,31 +117,25 @@ export default function AddVaccineForm({ onClose, onVaccineAdded, petId }) {
           <label className="w-full text-left text-congress-950">
             Applied By
           </label>
-          <input
+          <select
             {...register("appliedBy")}
+            onChange={handleVetSelect}
             className={clsx(
               "w-full rounded-md border border-gray-200 p-2 text-congress-950",
               {
                 "border-red-500": errors.appliedBy,
               }
             )}
-          />
+          >
+            <option value="">Select a vet</option>
+            {vets.map((vet) => (
+              <option key={vet._id} value={vet._id}>
+                {vet.user}
+              </option>
+            ))}
+          </select>
           {errors.appliedBy && (
             <span className="text-red-500">{errors.appliedBy.message}</span>
-          )}
-
-          <label className="w-full text-left text-congress-950">Vet</label>
-          <input
-            {...register("vet")}
-            className={clsx(
-              "w-full rounded-md border border-gray-200 p-2 text-congress-950",
-              {
-                "border-red-500": errors.vet,
-              }
-            )}
-          />
-          {errors.vet && (
-            <span className="text-red-500">{errors.vet.message}</span>
           )}
 
           <div className="flex justify-end">
