@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-
+import { useAccount } from "@/context/AccountContext";
+import { getUser } from "../api/services/users/User";
 import { MdOutlineMedicalServices } from "react-icons/md";
 import { MdPets } from "react-icons/md";
 import { MdOutlineEdit } from "react-icons/md";
 import { MdDeleteOutline } from "react-icons/md";
-
 import ProfileImagePet from "@/components/ProfileImagePet";
 import Calendar from "@/components/Calendar";
 import ButtonList from "@/components/ButtonList";
@@ -15,11 +15,11 @@ import DashboardLayout from "@/Layouts/DashboardLayout";
 import EditPetForm from "./editPetForm";
 import DelePet from "./deletePet";
 import ButtonJoinNow from "@/components/ButtonJoinNow";
-
 import AddVaccineForm from "../AddVaccineForm";
 import AddAppointmentForm from "../AddAppointmentForm";
-
+import AddProcedureForm from "../addProcedureForm";
 import { getPet } from "../api/services/pets/crudPet";
+import SquareButton from "@/components/SquareButton";
 
 export default function Mascotas() {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,7 +30,34 @@ export default function Mascotas() {
   const { id } = router.query;
   const [isVaccineModalOpen, setIsVaccineModalOpen] = useState(false);
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
+  const [isProcedureModalOpen, setIsProcedureModalOpen] = useState(false);
   const [vaccines, setVaccines] = useState([]);
+
+  const { setAccount } = useAccount();
+
+  useEffect(() => {
+    const storedId = localStorage.getItem("access-id");
+    const getAccountInfo = async () => {
+      try {
+        const userInfo = await getUser(storedId);
+        const accountInfo = userInfo?.data?.user;
+
+        setAccount({
+          name: accountInfo.name,
+          lastName: accountInfo.lastName,
+          email: accountInfo.email,
+          role: accountInfo.role,
+          birthday: accountInfo.birthday,
+          profilePic: accountInfo.profilePic,
+        });
+      } catch (error) {
+        throw error;
+      }
+    };
+    getAccountInfo();
+  }, []);
+
+  const { account } = useAccount();
 
   useEffect(() => {
     if (!id) return;
@@ -48,6 +75,10 @@ export default function Mascotas() {
     setIsVaccineModalOpen(!isVaccineModalOpen);
   };
 
+  const handleProcedureModal = () => {
+    setIsProcedureModalOpen(!isProcedureModalOpen);
+  };
+
   const handleAppointmentModal = () => {
     setIsAppointmentModalOpen(!isAppointmentModalOpen);
     if (!isAppointmentModalOpen) {
@@ -63,8 +94,21 @@ export default function Mascotas() {
 
   const handleVaccineAdded = async (newVaccine) => {
     try {
+      alert("Agregar accion despues de registrar vacuna");
+      /*
       const updatedVaccines = await addVaccine(pet._id, newVaccine);
-      setVaccines(updatedVaccines);
+      setVaccines(updatedVaccines);*/
+    } catch (error) {
+      console.error("Error adding vaccine:", error);
+    }
+  };
+
+  const handdleProcedureAdded = async (newVaccine) => {
+    try {
+      alert("Agregar accion despues de registrar procedimientos");
+      /*
+      const updatedVaccines = await addVaccine(pet._id, newVaccine);
+      setVaccines(updatedVaccines);*/
     } catch (error) {
       console.error("Error adding vaccine:", error);
     }
@@ -146,9 +190,12 @@ export default function Mascotas() {
               </div>
             </div>
             <section className="flex flex-col md:flex-row gap-2 p-2">
-              <ButtonJoinNow onClick={handleVaccineModal}>
-                Agregar Vacuna
-              </ButtonJoinNow>
+              <SquareButton onClick={handleVaccineModal}>
+                Agregar <br /> Vacuna
+              </SquareButton>
+              <SquareButton onClick={handleProcedureModal}>
+                Agregar Procedimiento
+              </SquareButton>
               <ButtonJoinNow onClick={handleAppointmentModal}>
                 Agregar Cita
               </ButtonJoinNow>
@@ -157,6 +204,13 @@ export default function Mascotas() {
                 <AddVaccineForm
                   onClose={handleVaccineModal}
                   onVaccineAdded={handleVaccineAdded}
+                />
+              )}
+
+              {isProcedureModalOpen && (
+                <AddProcedureForm
+                  onClose={handleProcedureModal}
+                  onVaccineAdded={handdleProcedureAdded}
                 />
               )}
 

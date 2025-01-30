@@ -2,6 +2,12 @@
   {
     "user": [
       {
+        "id": 5,
+        "text": "Inicio",
+        "icon": "PiSquaresFourLight",
+        "url":"/"
+      },
+      {
         "id": 1,
         "text": "Mi perfil",
         "icon": "PiUserLight"
@@ -20,11 +26,6 @@
         "id": 4,
         "text": "Preguntas frecuentes",
         "icon": "PiQuestionLight"
-      },
-      {
-        "id": 5,
-        "text": "Inicio",
-        "icon": "PiSquaresFourLight"
       }
     ]
   }

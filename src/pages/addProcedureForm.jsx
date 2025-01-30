@@ -9,14 +9,14 @@ import { MdClose } from "react-icons/md";
 import PrimaryButton from "@/components/PrimaryButton";
 
 const schema = yup.object().shape({
-  name: yup
+  reason: yup
     .string()
-    .required("Name is required")
+    .required("Razón o motivo requerido")
     .min(2, "Name must be at least 2 characters"),
-  comments: yup.string(),
+  diagnosis: yup.string().required("Diagnostico requerido"),
 });
 
-export default function AddVaccineForm({ onClose, onVaccineAdded }) {
+export default function AddProcedureForm({ onClose, onVaccineAdded }) {
   const {
     register,
     handleSubmit,
@@ -59,10 +59,10 @@ export default function AddVaccineForm({ onClose, onVaccineAdded }) {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
-              Nombre de la vacuna
+              Razón
             </label>
             <input
-              {...register("name")}
+              {...register("reason")}
               className={clsx(
                 "w-full rounded-md border border-gray-200 p-2 text-congress-950 mt-1",
                 {
@@ -70,23 +70,30 @@ export default function AddVaccineForm({ onClose, onVaccineAdded }) {
                 }
               )}
             />
-            {errors.name && (
-              <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+            {errors.reason && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.reason.message}
+              </p>
             )}
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
-              Comments
+              Diagnostico
             </label>
             <input
-              {...register("comments")}
+              {...register("diagnosis")}
               className={clsx(
                 "w-full rounded-md border border-gray-200 p-2 text-congress-950",
                 {
-                  "border-red-500": errors.comments,
+                  "border-red-500": errors.diagnosis,
                 }
               )}
             />
+            {errors.diagnosis && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.diagnosis.message}
+              </p>
+            )}
           </div>
 
           <button
