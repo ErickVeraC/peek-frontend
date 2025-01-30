@@ -217,7 +217,7 @@ export default function Mascotas() {
               {isAppointmentModalOpen && (
                 <AddAppointmentForm
                   onClose={handleAppointmentModal}
-                  petId={pet._id} // Pasar el ID de la mascota al formulario de cita
+                  petId={pet._id}
                 />
               )}
             </section>

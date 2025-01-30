@@ -6,6 +6,7 @@ import * as yup from "yup";
 import { toast } from "sonner";
 import { useState } from "react";
 import { MdClose } from "react-icons/md";
+import PrimaryButton from "@/components/PrimaryButton";
 
 const schema = yup.object().shape({
   date: yup.date().required("Date is required"),
@@ -133,13 +134,9 @@ export default function AddAppointmentForm({
           )}
 
           <div className="flex justify-end">
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-md"
-              disabled={loading}
-            >
+            <PrimaryButton type="submit" loading={loading}>
               {loading ? "Creating..." : "Create Appointment"}
-            </button>
+            </PrimaryButton>
           </div>
         </form>
       </div>

@@ -2,9 +2,10 @@ import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { createVaccine } from "@/pages/api/services/petsFile/vaccinesService";
+import { getAllVets } from "./api/services/vets/Vet";
 import * as yup from "yup";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MdClose } from "react-icons/md";
 import PrimaryButton from "@/components/PrimaryButton";
 
@@ -16,7 +17,7 @@ const schema = yup.object().shape({
   comments: yup.string(),
 });
 
-export default function AddVaccineForm({ onClose, onVaccineAdded }) {
+export default function AddVaccineForm({ onClose, onVaccineAdded, petId }) {
   const {
     register,
     handleSubmit,
@@ -26,6 +27,26 @@ export default function AddVaccineForm({ onClose, onVaccineAdded }) {
   });
 
   const [loading, setLoading] = useState(false);
+  const [vets, setVets] = useState([]);
+  const [selectedVetId, setSelectedVetId] = useState(null);
+
+  useEffect(() => {
+    async function fetchVets() {
+      try {
+        const vetsData = await getAllVets();
+        console.log("Vets Data:", vetsData); // Agregar console.log para verificar los datos
+        setVets(vetsData.data.vets);
+      } catch (error) {
+        console.error("Error fetching vets:", error);
+      }
+    }
+
+    fetchVets();
+  }, []);
+
+  const handleVetSelect = (event) => {
+    setSelectedVetId(event.target.value);
+  };
 
   const onSubmit = async (data) => {
     alert("Agregar función de registrar vacuna");
@@ -33,6 +54,14 @@ export default function AddVaccineForm({ onClose, onVaccineAdded }) {
     /* try {
       await createVaccine(data);
       toast.success("Vacuna creada con éxito");
+    const formattedData = {
+      ...data,
+      petId,
+      vet: selectedVetId,
+    };
+    try {
+      const vaccine = await createVaccine(formattedData);
+      toast.success("Vacuna creada con éxito", vaccine);
       if (typeof onVaccineAdded === "function") {
         onVaccineAdded();
       }
