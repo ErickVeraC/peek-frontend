@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { MdClose } from "react-icons/md";
 import PrimaryButton from "@/components/PrimaryButton";
+import { createProcedure } from "./api/services/petsFile/proceduresService";
 
 const schema = yup.object().shape({
   reason: yup
@@ -14,9 +15,12 @@ const schema = yup.object().shape({
     .required("Razón o motivo requerido")
     .min(2, "Name must be at least 2 characters"),
   diagnosis: yup.string().required("Diagnostico requerido"),
+  prescription: yup
+    .string()
+    .required("Receta o indicaciónes post procedimiento requeridas."),
 });
 
-export default function AddProcedureForm({ onClose, onVaccineAdded }) {
+export default function AddProcedureForm({ petId, onClose, onVaccineAdded }) {
   const {
     register,
     handleSubmit,
@@ -28,34 +32,37 @@ export default function AddProcedureForm({ onClose, onVaccineAdded }) {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
-    alert("Agregar función de registrar vacuna");
+    data.petId = petId;
+    data.vetId = localStorage.getItem("access-id");
+
     setLoading(true);
-    /* try {
-      await createVaccine(data);
-      toast.success("Vacuna creada con éxito");
-      if (typeof onVaccineAdded === "function") {
-        onVaccineAdded();
-      }
-      if (typeof onClose === "function") {
-        onClose();
-      }
+    try {
+      await createProcedure(data);
+      toast.success("Procedimiento clinico registrado con éxito");
+      onClose();
     } catch (error) {
-      toast.error(`Error creando vacuna: ${error.message}`);
+      toast.error(`Error creando el procedimiento: ${error.message}`);
     } finally {
       setLoading(false);
-    }*/
+    }
   };
 
   return (
     <section
       className={clsx(
-        "fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+        "fixed align-middle z-40 inset-0 flex items-center justify-center bg-black bg-opacity-50 ml-20"
       )}
     >
-      <div className="bg-white p-6 rounded-lg shadow-2xl w-96 relative">
-        <button onClick={onClose} className="absolute top-2 right-2">
+      <div className="bg-white p-6 rounded-lg shadow-2xl max-w-96 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-congress-600"
+        >
           <MdClose size={24} />
         </button>
+        <h2 className="text-congress-950 text-2xl text-center mb-4">
+          Agrega un procedimiento clinico
+        </h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
@@ -66,7 +73,7 @@ export default function AddProcedureForm({ onClose, onVaccineAdded }) {
               className={clsx(
                 "w-full rounded-md border border-gray-200 p-2 text-congress-950 mt-1",
                 {
-                  "border-red-500": errors.date,
+                  "border-red-500": errors.reason,
                 }
               )}
             />
@@ -95,7 +102,25 @@ export default function AddProcedureForm({ onClose, onVaccineAdded }) {
               </p>
             )}
           </div>
-
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Receta
+            </label>
+            <textarea
+              {...register("prescription")}
+              className={clsx(
+                "w-full rounded-md border border-gray-200 p-2 text-congress-950 mt-1",
+                {
+                  "border-red-500": errors.prescription,
+                }
+              )}
+            ></textarea>
+            {errors.prescription && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.prescription.message}
+              </p>
+            )}
+          </div>
           <button
             type="submit"
             className="bg-slate-900 text-white px-4 py-2 rounded-md w-full"
