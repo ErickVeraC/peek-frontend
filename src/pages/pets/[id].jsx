@@ -10,7 +10,6 @@ import ProfileImagePet from "@/components/ProfileImagePet";
 import Calendar from "@/components/Calendar";
 import ButtonList from "@/components/ButtonList";
 import EventHighlight from "@/components/EventHighlight";
-import PetName from "@/components/PetName";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import EditPetForm from "./editPetForm";
 import DelePet from "./deletePet";
@@ -20,6 +19,7 @@ import AddAppointmentForm from "../AddAppointmentForm";
 import AddProcedureForm from "../addProcedureForm";
 import { getPet } from "../api/services/pets/crudPet";
 import SquareButton from "@/components/SquareButton";
+import { TbCoffin } from "react-icons/tb";
 
 export default function Mascotas() {
   const [isLoading, setIsLoading] = useState(true);
@@ -129,13 +129,12 @@ export default function Mascotas() {
           <MdPets className="text-white text-6xl animate-bounce" />
         </div>
       )}
-      <div className="pl-24 pr-3 bg-gray-100">
-        <PetName name={pet.name} />
-        <div className="flex flex-wrap md:flex-nowrap gap-8">
+      <div className="pl-24 pr-3 bg-gray-100 mt-5">
+        <div className="flex flex-wrap md:flex-nowrap gap-8 p-6">
           <div className="w-full md:w-[40%]">
             <div className="flex flex-col gap-8">
               <div className="w-full relative ">
-                <div className="absolute z-[4] left-7 bottom-6 flex flex-col gap-7">
+                <div className="absolute z-[2] left-7 bottom-6 flex flex-col gap-7">
                   <button
                     onClick={handleModal}
                     className="text-white text-3xl opacity-65"
@@ -146,39 +145,40 @@ export default function Mascotas() {
                     onClick={handleDeletePet}
                     className="text-white text-3xl opacity-65"
                   >
-                    <MdDeleteOutline />
+                    <TbCoffin />
                   </button>
+                  <h2 className="text-3xl font-bold">{pet.name}</h2>
                 </div>
                 <ProfileImagePet image={pet.picture} />
               </div>
-              <div className="w-full bg-white shadow-md rounded-2xl p-9 text-black">
-                <Calendar petId={id} />
-              </div>
+              <div className="w-full bg-white shadow-md rounded-2xl p-9 text-black"></div>
             </div>
           </div>
           <div className="w-full flex flex-col gap-8 md:w-[60%]">
             <div className="flex flex-wrap lg:flex-nowrap  gap-8">
               <div className="w-full lg:w-[65%] flex gap-8 flex-col">
-                <div className="min-h-20 bg-unset sm:bg-congress-100 rounded-2xl flex items-center justify-center gap-6 flex-wrap sm:flex-nowrap">
+                <div className="min-h-44 bg-unset sm:bg-congress-900 rounded-2xl flex items-center justify-evenly gap-6 flex-wrap sm:flex-nowrap">
                   <ButtonList />
                 </div>
-                <div className="flex flex-wrap sm:flex-nowrap gap-8 justify-between">
-                  <EventHighlight title="Carnet" icon />
-                  <EventHighlight
-                    title="Vacunas"
-                    percentage="0%"
-                    subtitle="puestas"
-                    gradient
-                  />
-                  <EventHighlight
-                    title="Última visita"
-                    percentage="0"
-                    subtitle="días"
-                  />
+                <div className="flex flex-wrap sm:flex-nowrap gap-8 justify-between items-end  h-full">
+                  {account.role == 0 ? (
+                    <SquareButton onClick={handleVaccineModal}>
+                      Agregar <br /> Vacuna
+                    </SquareButton>
+                  ) : null}
+                  {account.role == 0 ? (
+                    <SquareButton onClick={handleProcedureModal}>
+                      Agregar Procedimiento
+                    </SquareButton>
+                  ) : null}
+                  <SquareButton onClick={handleAppointmentModal}>
+                    Agregar <br />
+                    Cita
+                  </SquareButton>
                 </div>
               </div>
-              <div className="w-full lg:w-[35%] bg-white shadow-md rounded-2xl p-9 ">
-                Actividad
+              <div className="w-full lg:w-[35%] bg-white shadow-md rounded-2xl p-9 text-congress-800 ">
+                <Calendar petId={id} />
               </div>
             </div>
             <div className="w-full bg-white shadow-md rounded-2xl p-9 ">
@@ -189,26 +189,19 @@ export default function Mascotas() {
                 </span>
               </div>
             </div>
-            <section className="flex flex-col md:flex-row gap-2 p-2">
-              <SquareButton onClick={handleVaccineModal}>
-                Agregar <br /> Vacuna
-              </SquareButton>
-              <SquareButton onClick={handleProcedureModal}>
-                Agregar Procedimiento
-              </SquareButton>
-              <ButtonJoinNow onClick={handleAppointmentModal}>
-                Agregar Cita
-              </ButtonJoinNow>
 
+            <section className="flex flex-col justify-center items-center w-full">
               {isVaccineModalOpen && (
                 <AddVaccineForm
                   onClose={handleVaccineModal}
                   onVaccineAdded={handleVaccineAdded}
+                  petId={pet._id}
                 />
               )}
 
               {isProcedureModalOpen && (
                 <AddProcedureForm
+                  petId={pet._id}
                   onClose={handleProcedureModal}
                   onVaccineAdded={handdleProcedureAdded}
                 />
