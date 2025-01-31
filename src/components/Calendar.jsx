@@ -41,9 +41,9 @@ export default function Calendar({ petId }) {
 
   return (
     <div>
-      <div className="text-congress-700 flex flex-col items-center justify-center gap-3">
+      <div className="text-congress-700 flex flex-row items-center justify-stat gap-3 mb-4">
         <MdCalendarToday className="h-8 w-8" />
-        <span className="text-neutral-700 text-xs">Próximas Citas</span>
+        <span className="text-neutral-700 text-l">Próximas Citas</span>
       </div>
       <ul>
         {currentAppointments.map((appointment, index) => (

@@ -5,10 +5,13 @@ import { useEffect } from "react";
 import { getUser } from "../api/services/users/User";
 
 export default function Dashboard() {
-  const { setAccount } = useAccount();
-
   useEffect(() => {
     const storedId = localStorage.getItem("access-id");
+    if (storedId == null) {
+      //  alert("sin acceso");
+      window.location.href = "/";
+    }
+    const { setAccount } = useAccount();
     const getAccountInfo = async () => {
       try {
         const userInfo = await getUser(storedId);

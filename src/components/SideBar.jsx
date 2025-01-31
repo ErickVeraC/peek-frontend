@@ -63,22 +63,26 @@ export default function SideBar() {
             {sideBar[0].user.map((item, index) => {
               const IconComponent = iconMap[item.icon];
               return (
-                <li
-                  key={index}
-                  className={clsx(
-                    "flex items-center  gap-4 cursor-pointer w-full h-10 transition-all duration-200 ease-in-out",
-                    {
-                      "px-4 justify-start": isShowingNavBar,
-                      "justify-center": !isShowingNavBar,
-                    }
-                  )}
-                >
-                  {IconComponent ? <IconComponent className="w-6 h-6" /> : null}
+                <a href={item.url}>
+                  <li
+                    key={index}
+                    className={clsx(
+                      "flex items-center  gap-4 cursor-pointer w-full h-10 transition-all duration-200 ease-in-out",
+                      {
+                        "px-4 justify-start": isShowingNavBar,
+                        "justify-center": !isShowingNavBar,
+                      }
+                    )}
+                  >
+                    {IconComponent ? (
+                      <IconComponent className="w-6 h-6" />
+                    ) : null}
 
-                  {isShowingNavBar ? (
-                    <span className="text-lg">{item.text}</span>
-                  ) : null}
-                </li>
+                    {isShowingNavBar ? (
+                      <span className="text-lg">{item.text}</span>
+                    ) : null}
+                  </li>
+                </a>
               );
             })}
           </ul>

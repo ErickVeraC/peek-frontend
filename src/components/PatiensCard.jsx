@@ -23,8 +23,10 @@ export default function PatientsCard() {
           pet.petOwner.name + " " + pet.petOwner.lastName,
           pet.petOwner.phone,
           pet.petOwner.email,
+          `<a href="pets/${pet._id}">ver</a>`,
         ]);
         setTableData(formattedData);
+        // alert(JSON.stringify(petsData));
       } catch (error) {
         console.error("Error fetching pets:", error);
       }
@@ -47,6 +49,7 @@ export default function PatientsCard() {
             <th>Dueño</th>
             <th>Telefono</th>
             <th>Email</th>
+            <th></th>
           </tr>
         </thead>
       </DataTable>
