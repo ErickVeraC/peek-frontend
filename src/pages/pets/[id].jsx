@@ -21,17 +21,16 @@ import { getPet } from "../api/services/pets/crudPet";
 import SquareButton from "@/components/SquareButton";
 import { TbCoffin } from "react-icons/tb";
 
-export default function Mascotas() {
+export default function Mascotas({ pet: initialPet, account: initialAccount }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeletePet, setIsDeletePet] = useState(false);
-  const [pet, setPet] = useState({});
+  const [pet, setPet] = useState(initialPet || {});
   const router = useRouter();
   const { id } = router.query;
   const [isVaccineModalOpen, setIsVaccineModalOpen] = useState(false);
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
   const [isProcedureModalOpen, setIsProcedureModalOpen] = useState(false);
-  const [vaccines, setVaccines] = useState([]);
 
   const { setAccount } = useAccount();
 
@@ -51,7 +50,7 @@ export default function Mascotas() {
           profilePic: accountInfo.profilePic,
         });
       } catch (error) {
-        throw error;
+        console.error("Error fetching account info:", error);
       }
     };
     getAccountInfo();
@@ -67,7 +66,8 @@ export default function Mascotas() {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        console.error("Error fetching pet data:", error);
+        setIsLoading(false);
       });
   }, [id]);
 
@@ -122,13 +122,30 @@ export default function Mascotas() {
     setIsDeletePet(!isDeletePet);
   };
 
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 flex items-center bg-black bg-opacity-50 justify-center p-4 text-white z-10">
+        <MdPets className="text-white text-6xl animate-bounce" />
+      </div>
+    );
+  }
+
+  if (!pet) {
+    return (
+      <DashboardLayout>
+        <div className="pl-24 pr-3 bg-gray-100 mt-5">
+          <div className="flex flex-wrap md:flex-nowrap gap-8 p-6">
+            <div className="w-full text-center">
+              <h2 className="text-3xl font-bold">Mascota no encontrada</h2>
+            </div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout>
-      {isLoading && (
-        <div className="fixed inset-0 flex items-center bg-black bg-opacity-50 justify-center p-4 text-white z-10">
-          <MdPets className="text-white text-6xl animate-bounce" />
-        </div>
-      )}
       <div className="pl-24 pr-3 bg-gray-100 mt-5">
         <div className="flex flex-wrap md:flex-nowrap gap-8 p-6">
           <div className="w-full md:w-[40%]">
@@ -147,9 +164,11 @@ export default function Mascotas() {
                   >
                     <TbCoffin />
                   </button>
-                  <h2 className="text-3xl font-bold">{pet.name}</h2>
+                  <h2 className="text-3xl font-bold">
+                    {pet?.name || "Nombre no disponible"}
+                  </h2>
                 </div>
-                <ProfileImagePet image={pet.picture} />
+                <ProfileImagePet image={pet?.picture || ""} />
               </div>
               <div className="w-full bg-white shadow-md rounded-2xl p-9 text-black"></div>
             </div>
@@ -161,12 +180,12 @@ export default function Mascotas() {
                   <ButtonList />
                 </div>
                 <div className="flex flex-wrap sm:flex-nowrap gap-8 justify-between items-end  h-full">
-                  {account.role == 0 ? (
+                  {account && account.role === 0 ? (
                     <SquareButton onClick={handleVaccineModal}>
                       Agregar <br /> Vacuna
                     </SquareButton>
                   ) : null}
-                  {account.role == 0 ? (
+                  {account && account.role === 0 ? (
                     <SquareButton onClick={handleProcedureModal}>
                       Agregar Procedimiento
                     </SquareButton>
@@ -195,13 +214,13 @@ export default function Mascotas() {
                 <AddVaccineForm
                   onClose={handleVaccineModal}
                   onVaccineAdded={handleVaccineAdded}
-                  petId={pet._id}
+                  petId={pet?._id}
                 />
               )}
 
               {isProcedureModalOpen && (
                 <AddProcedureForm
-                  petId={pet._id}
+                  petId={pet?._id}
                   onClose={handleProcedureModal}
                   onVaccineAdded={handdleProcedureAdded}
                 />
@@ -210,7 +229,7 @@ export default function Mascotas() {
               {isAppointmentModalOpen && (
                 <AddAppointmentForm
                   onClose={handleAppointmentModal}
-                  petId={pet._id}
+                  petId={pet?._id}
                 />
               )}
             </section>
@@ -221,7 +240,10 @@ export default function Mascotas() {
         <EditPetForm handleModal={handleModal} pet={pet} setPet={setPet} />
       )}
       {isDeletePet && (
-        <DelePet handleDeletePet={handleDeletePet} name={pet.name} />
+        <DelePet
+          handleDeletePet={handleDeletePet}
+          name={pet?.name || "Nombre no disponible"}
+        />
       )}
     </DashboardLayout>
   );
