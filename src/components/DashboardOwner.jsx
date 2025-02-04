@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { MdCalendarToday } from "react-icons/md";
 import { getAppointmentsByPetId } from "../pages/api/services/petsFile/appointmentService";
 
+import { getAllAppointmentsByOwner } from "../pages/api/services/petsFile/appointmentService";
+
 export default function DashboardOwner() {
   const { account } = useAccount();
   const [appointments, setAppointments] = useState([]);

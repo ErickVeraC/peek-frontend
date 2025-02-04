@@ -1,30 +1,22 @@
-import { useState, useEffect } from "react";
-import Uppy from "@uppy/core";
-import { Dashboard } from "@uppy/react";
-import Transloadit from "@uppy/transloadit";
 import "@uppy/core/dist/style.css";
 import "@uppy/dashboard/dist/style.css";
 
-import { testTransloaditConnection } from "@/pages/api/services/testTransloaditConnection";
+import { useState, useEffect } from "react";
+import Uppy from "@uppy/core";
+import Transloadit from "@uppy/transloadit";
+import { Dashboard } from "@uppy/react";
 
 export default function ImageUploader({ onUpload }) {
   const [uppy, setUppy] = useState(null);
-  const [isUploadingFile, setIsUploadingFile] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
-  const [isValidTransloadit, setIsValidTransloadit] = useState(null); // Estado para saber si la conexión es válida
 
-  useEffect(() => {
-    // Verificar la conexión antes de inicializar Uppy
-    testTransloaditConnection()
-      .then((isValid) => {
-        console.log("Transloadit connection:", isValid);
-        setIsValidTransloadit(isValid);
-      })
-      .catch((err) => {
-        console.error("Error testing Transloadit connection:", err);
-        setIsValidTransloadit(false);
-      });
-  }, []);
+  const onCompleteUploadFiles = (assembly) => {
+    const image = assembly.results?.compress_image?.[0]?.ssl_url;
+    if (image) {
+      setImageUrl(image);
+      if (onUpload) onUpload(image);
+    }
+  };
 
   useEffect(() => {
     const uppyInstance = new Uppy({
@@ -37,24 +29,7 @@ export default function ImageUploader({ onUpload }) {
         },
         waitForEncoding: true,
       })
-      .on("transloadit:complete", onCompleteUploadFiles)
-      .on("transloadit:assembly-created", (assembly) => {
-        console.log("Transloadit assembly created:", assembly);
-      })
-      .on("transloadit:upload", (file) => {
-        console.log("Transloadit upload started:", file);
-      })
-      .on("transloadit:result", (stepName, result) => {
-        console.log(`Transloadit result for step ${stepName}:`, result);
-      })
-      .on("transloadit:failed", (assembly) =>
-        console.error("Transloadit assembly failed:", assembly)
-      )
-      .on("error", (error) => console.error("Uppy error:", error))
-      .on("file-added", (file) => {
-        console.log("File added:", file);
-        setIsUploadingFile(true);
-      });
+      .on("transloadit:complete", onCompleteUploadFiles);
 
     setUppy(uppyInstance);
 
@@ -63,60 +38,18 @@ export default function ImageUploader({ onUpload }) {
     };
   }, [onUpload]);
 
-  const onCompleteUploadFiles = (assembly) => {
-    console.log("Transloadit complete:", assembly);
-
-    if (!assembly || !assembly.results) {
-      console.error(
-        "Error: La respuesta de Transloadit no contiene 'results'.",
-        assembly
-      );
-      return;
-    }
-
-    console.log("Assembly results:", assembly.results);
-
-    // Validar que el paso "compress_image" existe en los resultados
-    const compressImageResults = assembly.results.compress_image;
-    if (!compressImageResults || compressImageResults.length === 0) {
-      console.error(
-        "Error: No se encontraron archivos comprimidos en Transloadit."
-      );
-      return;
-    }
-
-    // Intentar extraer la URL del primer archivo comprimido
-    const url = compressImageResults[0]?.ssl_url;
-    if (!url) {
-      console.error(
-        "Error: No se encontró una URL válida en los resultados de compress_image."
-      );
-      return;
-    }
-
-    console.log("Image uploaded successfully:", url);
-    setImageUrl(url);
-    setIsUploadingFile(false);
-    if (onUpload) {
-      onUpload(url);
-    }
-  };
-
   return (
     <>
       <div className="container">
-        {uppy ? (
+        {uppy && (
           <>
             <Dashboard uppy={uppy} />
-            <p>{isUploadingFile ? "Cargando" : "Exito de Carga"}</p>
             {imageUrl && (
               <div className="image">
                 <img src={imageUrl} alt="Uploaded" />
               </div>
             )}
           </>
-        ) : (
-          <p>Cargando uploader...</p>
         )}
       </div>
     </>
