@@ -38,6 +38,15 @@ export default function ImageUploader({ onUpload }) {
         waitForEncoding: true,
       })
       .on("transloadit:complete", onCompleteUploadFiles)
+      .on("transloadit:assembly-created", (assembly) => {
+        console.log("Transloadit assembly created:", assembly);
+      })
+      .on("transloadit:upload", (file) => {
+        console.log("Transloadit upload started:", file);
+      })
+      .on("transloadit:result", (stepName, result) => {
+        console.log(`Transloadit result for step ${stepName}:`, result);
+      })
       .on("transloadit:failed", (assembly) =>
         console.error("Transloadit assembly failed:", assembly)
       )
@@ -85,6 +94,7 @@ export default function ImageUploader({ onUpload }) {
       return;
     }
 
+    console.log("Image uploaded successfully:", url);
     setImageUrl(url);
     setIsUploadingFile(false);
     if (onUpload) {
