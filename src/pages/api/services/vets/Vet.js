@@ -2,6 +2,11 @@ const api = process.env.NEXT_PUBLIC_API_URL;
 
 export async function createVet(vetData) {
   try {
+    const token = localStorage.getItem("access-token");
+    if (!token) {
+      throw new Error("No access token found");
+    }
+
     const response = await fetch(`${api}/vets`, {
       method: "POST",
       headers: {
@@ -24,13 +29,18 @@ export async function createVet(vetData) {
   }
 }
 
-export async function getAllVets(accessToken) {
+export async function getAllVets() {
   try {
+    const token = localStorage.getItem("access-token");
+    if (!token) {
+      throw new Error("No access token found");
+    }
+
     const response = await fetch(`${api}/vets`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
