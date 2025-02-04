@@ -8,6 +8,7 @@ import { useState } from "react";
 
 import { MdClose } from "react-icons/md";
 
+import ImageUploader from "@/components/ImageUploader";
 import PrimaryButton from "@/components/PrimaryButton";
 
 const schema = yup.object().shape({
@@ -25,12 +26,20 @@ export default function AddPetForm({ onClose, onPetAdded }) {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
 
   const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
+
+  // Función que se ejecuta cuando la imagen se sube correctamente
+  const handleImageUpload = (url) => {
+    setImageUrl(url); // Guarda la URL en el estado
+    setValue("picture", url); // Actualiza el campo "picture" del formulario
+  };
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -132,16 +141,10 @@ export default function AddPetForm({ onClose, onPetAdded }) {
           <label className="w-full text-left text-congress-950">
             Picture URL
           </label>
-          <input
-            type="text"
-            {...register("picture")}
-            className={clsx(
-              "w-full rounded-md border border-gray-200 p-2 text-congress-950",
-              {
-                "border-red-500": errors.picture,
-              }
-            )}
-          />
+          <label className="w-full text-left text-congress-950">
+            Sube una foto
+          </label>
+          <ImageUploader onUpload={handleImageUpload} />
           {errors.picture && (
             <span className="text-red-500">{errors.picture.message}</span>
           )}
