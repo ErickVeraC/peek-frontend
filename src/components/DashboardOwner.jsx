@@ -4,9 +4,10 @@ import { MdPets } from "react-icons/md";
 import { useAccount } from "@/context/AccountContext";
 import { useEffect, useState } from "react";
 import { MdCalendarToday } from "react-icons/md";
-import { getAppointmentsByPetId } from "../pages/api/services/petsFile/appointmentService";
-
-import { getAllAppointmentsByOwner } from "../pages/api/services/petsFile/appointmentService";
+import {
+  getAppointmentsByPetId,
+  getAllAppointmentsByOwner,
+} from "../pages/api/services/petsFile/appointmentService";
 
 export default function DashboardOwner() {
   const { account } = useAccount();
@@ -15,10 +16,15 @@ export default function DashboardOwner() {
   const appointmentsPerPage = 5;
 
   useEffect(() => {
-    if (!account.petId) {
+    console.log("Account data:", account);
+
+    if (!account || !account.petId) {
       console.error("petId is undefined");
       return;
     }
+
+    console.log("Fetching appointments for petId:", account.petId);
+    console.log("Fetching all appointments for ownerId:", account.ownerId);
 
     async function fetchAppointments() {
       try {
@@ -27,13 +33,26 @@ export default function DashboardOwner() {
           (a, b) => new Date(a.date) - new Date(b.date)
         );
         setAppointments(sortedAppointments);
+        console.log("Fetched appointments:", sortedAppointments);
       } catch (error) {
         console.error("Error fetching appointments:", error);
       }
     }
 
+    async function fetchAllAppointmentsByOwner() {
+      try {
+        const ownerAppointments = await getAllAppointmentsByOwner(
+          account.ownerId
+        );
+        console.log("Owner Appointments:", ownerAppointments);
+      } catch (error) {
+        console.error("Error fetching all appointments by owner:", error);
+      }
+    }
+
     fetchAppointments();
-  }, [account.petId]);
+    fetchAllAppointmentsByOwner();
+  }, [account]);
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
