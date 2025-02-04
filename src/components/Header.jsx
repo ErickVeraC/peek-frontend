@@ -47,7 +47,7 @@ export default function Header() {
               className="flex flex-row justify-between items-center gap-1 text-orange-500"
               onClick={toggleMenu}
             >
-              Hola, {account.name}
+              {account ? `Hola, ${account.name}` : "Hola, Invitado"}
               <PiCaretDownLight className="text size-6" />
             </button>
           </div>

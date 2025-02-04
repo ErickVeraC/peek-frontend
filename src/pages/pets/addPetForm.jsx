@@ -4,12 +4,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { createPet } from "@/pages/api/services/pets/createPet";
 import * as yup from "yup";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { MdClose } from "react-icons/md";
 
 import ImageUploader from "@/components/ImageUploader";
 import PrimaryButton from "@/components/PrimaryButton";
+
+import { getAllVets } from "../api/services/vets/Vet";
 
 const schema = yup.object().shape({
   name: yup
@@ -34,6 +36,7 @@ export default function AddPetForm({ onClose, onPetAdded }) {
 
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
+  const [vets, setVets] = useState([]);
 
   // Función que se ejecuta cuando la imagen se sube correctamente
   const handleImageUpload = (url) => {
@@ -58,6 +61,20 @@ export default function AddPetForm({ onClose, onPetAdded }) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchVets = async () => {
+      try {
+        const vetsData = await getAllVets();
+        setVets(vetsData.data.vets); // Guarda la lista de veterinarios en el estado
+        console.log("Vets:", vetsData);
+      } catch (error) {
+        console.error("Error fetching vets:", error);
+      }
+    };
+
+    fetchVets();
+  }, []);
 
   return (
     <section
@@ -89,6 +106,27 @@ export default function AddPetForm({ onClose, onPetAdded }) {
           />
           {errors.name && (
             <span className="text-red-500">{errors.name.message}</span>
+          )}
+
+          <label className="w-full text-left text-congress-950">Vet</label>
+          <select
+            {...register("vet")}
+            className={clsx(
+              "w-full rounded-md border border-gray-200 p-2 text-congress-950",
+              {
+                "border-red-500": errors.vet,
+              }
+            )}
+          >
+            <option value="">Select a vet</option>
+            {vets.map((vet) => (
+              <option key={vet._id} value={vet._id}>
+                {vet.user.name} {vet.user.lastName}
+              </option>
+            ))}
+          </select>
+          {errors.vet && (
+            <span className="text-red-500">{errors.vet.message}</span>
           )}
 
           <label className="w-full text-left text-congress-950">Birthday</label>

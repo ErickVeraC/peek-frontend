@@ -12,7 +12,6 @@ const schema = yup.object().shape({
   date: yup.date().required("Date is required"),
   hour: yup.string().required("Hour is required"),
   reason: yup.string().required("Reason is required"),
-  vetId: yup.string().required("Vet ID is required"),
 });
 
 export default function AddAppointmentForm({
@@ -116,21 +115,6 @@ export default function AddAppointmentForm({
           />
           {errors.reason && (
             <span className="text-red-500">{errors.reason.message}</span>
-          )}
-
-          <label className="w-full text-left text-congress-950">Vet ID</label>
-          <input
-            type="text"
-            {...register("vetId")}
-            className={clsx(
-              "w-full rounded-md border border-gray-200 p-2 text-congress-950",
-              {
-                "border-red-500": errors.vetId,
-              }
-            )}
-          />
-          {errors.vetId && (
-            <span className="text-red-500">{errors.vetId.message}</span>
           )}
 
           <div className="flex justify-end">

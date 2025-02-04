@@ -29,6 +29,35 @@ export async function getAppointmentsByPetId(petId) {
   }
 }
 
+export async function getAllAppointmentsByOwner(ownerId) {
+  try {
+    const token = localStorage.getItem("access-token");
+    if (!token) {
+      throw new Error("No access token found");
+    }
+
+    const response = await fetch(`${api}/owner/${ownerId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errorMessage = data.message || "Error.";
+      throw new Error(errorMessage);
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching appointments:", error.message);
+    throw error;
+  }
+}
+
 export async function createAppointment(appointmentData) {
   try {
     const token = localStorage.getItem("access-token");
