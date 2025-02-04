@@ -9,8 +9,8 @@ import { testTransloaditConnection } from "@/pages/api/services/testTransloaditC
 
 export default function ImageUploader({ onUpload }) {
   const [uppy, setUppy] = useState(null);
-  const [imageUrl, setImageUrl] = useState("");
   const [isUploadingFile, setIsUploadingFile] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
     const uppyInstance = new Uppy({
@@ -36,6 +36,9 @@ export default function ImageUploader({ onUpload }) {
         const fileUrl = URL.createObjectURL(file.data);
         console.log("File URL:", fileUrl);
         setImageUrl(fileUrl);
+        if (onUpload) {
+          onUpload(fileUrl);
+        }
       });
 
     setUppy(uppyInstance);
@@ -43,12 +46,15 @@ export default function ImageUploader({ onUpload }) {
     return () => {
       if (uppyInstance) uppyInstance.destroy();
     };
-  }, []);
+  }, [onUpload]);
 
   const onCompleteUploadFiles = (assembly) => {
     console.log("Transloadit complete:", assembly);
     const url = assembly.results[0].ssl_url;
     setImageUrl(url);
+    if (onUpload) {
+      onUpload(url);
+    }
   };
 
   return (
