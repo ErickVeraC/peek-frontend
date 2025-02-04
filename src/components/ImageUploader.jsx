@@ -12,90 +12,44 @@ export default function ImageUploader({ onUpload }) {
   const [imageUrl, setImageUrl] = useState("");
   const [isUploadingFile, setIsUploadingFile] = useState(false);
 
-  const onCompleteUploadFiles = (assembly) => {
-    console.log("Assembly completo:", assembly);
-
-    // Intenta extraer la URL desde distintos posibles campos
-    const image =
-      assembly.results?.export?.[0]?.ssl_url ||
-      assembly.results?.export?.[0]?.url ||
-      assembly.results?.compress_image?.[0]?.ssl_url ||
-      assembly.results?.compress_image?.[0]?.url ||
-      "";
-
-    console.log("URL extraída:", image);
-
-    setImageUrl(image);
-    setIsUploadingFile(false);
-
-    if (onUpload && image) {
-      onUpload(image);
-    }
-  };
-
-  const onFileInputChange = (event) => {
-    setIsUploadingFile(true); // Indica que la carga ha comenzado
-
-    const file = Array.from(event.target.files)[0] || null;
-
-    if (file && uppy) {
-      // Remover todos los archivos actuales
-      uppy.getFiles().forEach((uploadedFile) => {
-        uppy.removeFile(uploadedFile.id);
-      });
-
-      // Agregar el nuevo archivo con propiedades adicionales: source y meta
-      uppy.addFile({
-        name: file.name,
-        type: file.type,
-        data: file,
-        source: "local",
-        meta: {}, // Puedes dejarlo vacío
-      });
-
-      // Iniciar la carga
-      uppy.upload();
-    }
-  };
-
   useEffect(() => {
-    let uppyInstance = null;
-
-    const checkConnection = async () => {
-      const isConnected = await testTransloaditConnection();
-      if (!isConnected) {
-        console.error("Failed to connect to Transloadit");
-        return;
-      }
-
-      uppyInstance = new Uppy({
-        restrictions: { maxNumberOfFiles: 1 },
+    const uppyInstance = new Uppy({
+      restrictions: { maxNumberOfFiles: 1 },
+    })
+      .use(Transloadit, {
+        params: JSON.stringify({
+          auth: { key: process.env.NEXT_PUBLIC_TRANSLOADIT_AUTH_KEY },
+          template_id: process.env.NEXT_PUBLIC_TRANSLOADIT_TEMPLATE_ID,
+        }),
+        waitForEncoding: true,
       })
-        .use(Transloadit, {
-          params: JSON.stringify({
-            auth: { key: process.env.NEXT_PUBLIC_TRANSLOADIT_AUTH_KEY },
-            template_id: process.env.NEXT_PUBLIC_TRANSLOADIT_TEMPLATE_ID,
-          }),
-          waitForEncoding: true,
-        })
-        .on("transloadit:complete", onCompleteUploadFiles)
-        .on("transloadit:failed", (assembly) =>
-          console.error("Transloadit assembly failed:", assembly)
-        )
-        .on("error", (error) => console.error("Uppy error:", error))
-        .on("upload-success", (file, response) =>
-          console.log("Upload success:", file, response)
-        );
+      .on("transloadit:complete", onCompleteUploadFiles)
+      .on("transloadit:failed", (assembly) =>
+        console.error("Transloadit assembly failed:", assembly)
+      )
+      .on("error", (error) => console.error("Uppy error:", error))
+      .on("upload-success", (file, response) =>
+        console.log("Upload success:", file, response)
+      )
+      .on("file-added", (file) => {
+        console.log("File added:", file);
+        const fileUrl = URL.createObjectURL(file.data);
+        console.log("File URL:", fileUrl);
+        setImageUrl(fileUrl);
+      });
 
-      setUppy(uppyInstance);
-    };
-
-    checkConnection();
+    setUppy(uppyInstance);
 
     return () => {
       if (uppyInstance) uppyInstance.destroy();
     };
   }, []);
+
+  const onCompleteUploadFiles = (assembly) => {
+    console.log("Transloadit complete:", assembly);
+    const url = assembly.results[0].ssl_url;
+    setImageUrl(url);
+  };
 
   return (
     <>
@@ -103,7 +57,7 @@ export default function ImageUploader({ onUpload }) {
         {uppy ? (
           <>
             <DragDrop uppy={uppy} />
-            <p>{isUploadingFile ? "Cargando" : "👍"}</p>
+            <p>{isUploadingFile ? "Cargando" : "Exito de Carga"}</p>
             {imageUrl && (
               <div className="image">
                 <img src={imageUrl} alt="Uploaded" />
