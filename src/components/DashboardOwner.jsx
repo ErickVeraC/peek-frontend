@@ -16,10 +16,10 @@ export default function DashboardOwner() {
   const appointmentsPerPage = 5;
 
   useEffect(() => {
-    console.log("Account data:", account);
-
+    // console.log("Account data:", account);
+    console.log(account.roleInfo._id);
     if (!account || !account.petId) {
-      console.error("petId is undefined");
+      // console.error("petId is undefined");
       return;
     }
 
