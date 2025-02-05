@@ -15,7 +15,7 @@ export default function ImageUploader({ onUpload }) {
     console.log("imageloader", image);
     if (image) {
       setImageUrl(image);
-      // if (onUpload) onUpload(image);
+      if (onUpload) onUpload(image); // Descomentar esta línea
     }
   };
 
