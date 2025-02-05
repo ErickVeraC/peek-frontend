@@ -16,7 +16,7 @@ export default function DashboardOwner() {
   const appointmentsPerPage = 5;
 
   useEffect(() => {
-    if (!account || !account.roleInfo.user) {
+    if (!account || !account.roleInfo || !account.roleInfo.user) {
       return;
     }
 
@@ -55,22 +55,32 @@ export default function DashboardOwner() {
 
   return (
     <DashboardLayout>
-      <div className="bg-gray-100 ml-20 p-8 grid gap-4 grid-cols-1 lg:grid-cols-12 ">
+      <main className="bg-gray-100 ml-20 p-8 grid gap-4 grid-cols-1 lg:grid-cols-12 ">
         <div className="grid grid-cols-subgrid gap-4 md:grid-cols-2  lg:col-span-3 xl:col-span-2 lg:grid-cols-1 ">
           <div className="h-44 lg:h-96 bg-white shadow-md rounded-2xl p-6">
             <h2 className="text-congress-950">{account.name}</h2>
           </div>
-          <div className="min-h-16 lg:h-80 bg-white shadow-md rounded-2xl p-6">
-            <div className="text-congress-700 flex flex-col items-center justify-center gap-3">
+          <section className="min-h-16 lg:min-h-80 bg-white shadow-md rounded-2xl p-6">
+            <header className="text-congress-700 flex flex-col items-center justify-center gap-3">
               <MdCalendarToday className="h-8 w-8" />
               <span className="text-neutral-700 text-xs">Próximas Citas</span>
-            </div>
-            <ul>
-              {currentAppointments.map((appointment) => (
-                <li key={appointment._id}>
-                  {new Date(appointment.date).toLocaleDateString()}{" "}
-                  {appointment.hour}: {appointment.reason} -{" "}
-                  {appointment.petId.name}
+            </header>
+            <ul className="text-gray-800 py-4">
+              {currentAppointments.map((appointment, index) => (
+                <li
+                  key={appointment._id}
+                  className={`mb-4 ${index % 2 === 0 ? "bg-gray-100" : ""}`}
+                >
+                  <div className="flex justify-between">
+                    <span>
+                      {new Date(appointment.date).toLocaleDateString()}
+                    </span>
+                    <span>{appointment.hour}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>{appointment.petId.name}</span>
+                    <span>{appointment.reason}</span>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -78,19 +88,19 @@ export default function DashboardOwner() {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="px-4 py-2 mx-1 bg-gray-200 rounded disabled:opacity-50"
+                className="px-4 py-2 mx-1 bg-gray-200 text-gray-800 rounded disabled:opacity-50 transition ease-in-out duration-300 hover:bg-gray-300"
               >
                 Anterior
               </button>
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={indexOfLastAppointment >= appointments.length}
-                className="px-4 py-2 mx-1 bg-gray-200 rounded disabled:opacity-50"
+                className="px-4 py-2 mx-1 bg-gray-200 text-gray-800 rounded disabled:opacity-50 transition ease-in-out duration-300 hover:bg-gray-300"
               >
                 Siguiente
               </button>
             </div>
-          </div>
+          </section>
         </div>
         <div className="grid grid-cols-subgrid gap-4 md:grid-cols-2  lg:col-span-9 xl:col-span-10 lg:grid-cols-3 lg:content-center">
           <div className="md:col-span-2 lg:col-span-3  lg:row-span-1 text-3xl font-urbanist max-w-md text-congress-950 mb-5">
@@ -107,7 +117,7 @@ export default function DashboardOwner() {
           </div>
           <Pets />
         </div>
-      </div>
+      </main>
     </DashboardLayout>
   );
 }
