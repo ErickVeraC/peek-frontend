@@ -36,7 +36,7 @@ export async function getAllAppointmentsByOwner(ownerId) {
       throw new Error("No access token found");
     }
 
-    const response = await fetch(`${api}/owner/${ownerId}`, {
+    const response = await fetch(`${api}/appointments/owner/${ownerId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
