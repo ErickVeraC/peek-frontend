@@ -16,41 +16,29 @@ export default function DashboardOwner() {
   const appointmentsPerPage = 5;
 
   useEffect(() => {
-    // console.log("Account data:", account);
-    console.log(account.roleInfo._id);
-    if (!account || !account.petId) {
-      // console.error("petId is undefined");
+    if (!account || !account.roleInfo.user) {
       return;
     }
 
-    console.log("Fetching appointments for petId:", account.petId);
-    console.log("Fetching all appointments for ownerId:", account.ownerId);
-
-    async function fetchAppointments() {
-      try {
-        const appointmentsData = await getAppointmentsByPetId(account.petId);
-        const sortedAppointments = appointmentsData.sort(
-          (a, b) => new Date(a.date) - new Date(b.date)
-        );
-        setAppointments(sortedAppointments);
-        console.log("Fetched appointments:", sortedAppointments);
-      } catch (error) {
-        console.error("Error fetching appointments:", error);
-      }
-    }
+    console.log("Fetching all appointments for user:", account.roleInfo.user);
 
     async function fetchAllAppointmentsByOwner() {
       try {
-        const ownerAppointments = await getAllAppointmentsByOwner(
-          account.ownerId
-        );
-        console.log("Owner Appointments:", ownerAppointments);
+        const response = await getAllAppointmentsByOwner(account.roleInfo.user);
+        if (response.success) {
+          const sortedAppointments = response.data.appointments.sort(
+            (a, b) => new Date(a.date) - new Date(b.date)
+          );
+          setAppointments(sortedAppointments);
+          console.log("Fetched appointments:", sortedAppointments);
+        } else {
+          console.error("Error fetching appointments:", response.message);
+        }
       } catch (error) {
         console.error("Error fetching all appointments by owner:", error);
       }
     }
 
-    fetchAppointments();
     fetchAllAppointmentsByOwner();
   }, [account]);
 
@@ -81,7 +69,8 @@ export default function DashboardOwner() {
               {currentAppointments.map((appointment) => (
                 <li key={appointment._id}>
                   {new Date(appointment.date).toLocaleDateString()}{" "}
-                  {appointment.hour}: {appointment.reason}
+                  {appointment.hour}: {appointment.reason} -{" "}
+                  {appointment.petId.name}
                 </li>
               ))}
             </ul>
