@@ -37,7 +37,7 @@ export default function Dashboard() {
           roleInfo = vet[0];
         }
 
-        //console.log(roleInfo);
+        console.log(roleInfo);
         //Excelents
         setAccount({
           name: accountInfo.name,
