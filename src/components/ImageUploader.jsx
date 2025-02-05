@@ -12,9 +12,10 @@ export default function ImageUploader({ onUpload }) {
 
   const onCompleteUploadFiles = (assembly) => {
     const image = assembly.results?.compress_image?.[0]?.ssl_url;
+    console.log("imageloader", image);
     if (image) {
       setImageUrl(image);
-      if (onUpload) onUpload(image);
+      // if (onUpload) onUpload(image);
     }
   };
 
@@ -23,14 +24,16 @@ export default function ImageUploader({ onUpload }) {
       restrictions: { maxNumberOfFiles: 1 },
     })
       .use(Transloadit, {
-        params: {
-          auth: { key: process.env.NEXT_PUBLIC_TRANSLOADIT_AUTH_KEY },
-          template_id: process.env.NEXT_PUBLIC_TRANSLOADIT_TEMPLATE_ID,
+        assemblyOptions: {
+          params: {
+            auth: { key: process.env.NEXT_PUBLIC_TRANSLOADIT_AUTH_KEY },
+            template_id: process.env.NEXT_PUBLIC_TRANSLOADIT_TEMPLATE_ID,
+          },
         },
         waitForEncoding: true,
       })
       .on("transloadit:complete", onCompleteUploadFiles);
-
+    console.log("uppyInstace", uppyInstance);
     setUppy(uppyInstance);
 
     return () => {
@@ -43,7 +46,7 @@ export default function ImageUploader({ onUpload }) {
       <div className="container">
         {uppy && (
           <>
-            <Dashboard uppy={uppy} />
+            <Dashboard uppy={uppy} height={300} />
             {imageUrl && (
               <div className="image">
                 <img src={imageUrl} alt="Uploaded" />
