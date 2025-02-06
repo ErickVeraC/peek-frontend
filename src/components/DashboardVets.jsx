@@ -69,6 +69,8 @@ export default function DashboardVets() {
               day={appoinment.date}
               petImage={appoinment.petId.picture}
               reason={appoinment.reason}
+              type={appoinment.petId.typeAnimal}
+              breed={appoinment.petId.breed}
             />
           ))}
         </div>

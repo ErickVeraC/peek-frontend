@@ -2,6 +2,7 @@ import DataTable from "datatables.net-react";
 import DT from "datatables.net-dt";
 import { useEffect, useState } from "react";
 import { getAllPetsByVet } from "@/pages/api/services/pets/crudPet";
+import { getUser } from "@/pages/api/services/users/User";
 
 import { useAccount } from "@/context/AccountContext";
 
@@ -14,18 +15,25 @@ export default function PatientsCard() {
   useEffect(() => {
     async function fetchPets() {
       try {
-        const petsData = await getAllPetsByVet(account.roleInfo._id);
+        let petsData = await getAllPetsByVet(account.roleInfo._id);
+        for (let pet of petsData) {
+          // Esperamos a obtener el userInfo antes de continuar
+          const userInfo = await getUser(pet.petOwner.user);
+          const accountInfo = userInfo?.data?.user;
+          pet.petOwner = accountInfo;
+        }
         //console.log(petsData);
         const formattedData = petsData.map((pet) => [
-          `<img src="${pet.picture}" alt="Cover" width="50" height="10"  style="border-radius:100px" >`,
+          `<img src="${pet.picture}" alt="Cover" width="50" height="10" class="rounded-full" >`,
+
           pet.name,
           pet.typeAnimal,
-          pet.breed, // Raza
+          pet.breed,
           pet.birthday.slice(0, 10),
-          //pet.petOwner.name + " " + pet.petOwner.lastName,
-          // pet.petOwner.phone,
-          // pet.petOwner.email,
-          `<a href="pets/${pet._id}">ver</a>`,
+          pet.petOwner.name + " " + pet.petOwner.lastName,
+          pet.petOwner.phone,
+          pet.petOwner.email,
+          `<a class=" px-5 py-1 bg-slate-800 text-white rounded-lg" href="pets/${pet._id}">Ver perfil</a>`,
         ]);
         setTableData(formattedData);
         // alert(JSON.stringify(petsData));
@@ -43,13 +51,15 @@ export default function PatientsCard() {
       <DataTable data={tableData} className="display text-center">
         <thead className="border border-gray-300 p-2">
           <tr>
-            <th>Foto</th>
+            <th></th>
             <th>Nombre</th>
             <th>Tipo</th>
             <th>Raza</th>
             <th>Nacimiento</th>
-
-            <th></th>
+            <th>Nombre</th>
+            <th>Telefono</th>
+            <th>Email</th>
+            <th className="w-52 p-2"></th>
           </tr>
         </thead>
       </DataTable>
