@@ -33,12 +33,11 @@ export default function Dashboard() {
         if (accountInfo.role == 0) {
           let vets = await getAllVets();
           vets = vets?.data?.vets;
-          const vet = vets.filter((vet) => vet.user === storedId);
+          const vet = vets.filter((vet) => vet.user._id === storedId);
           roleInfo = vet[0];
+          //console.log(roleInfo._id);
         }
 
-        console.log(roleInfo);
-        //Excelents
         setAccount({
           name: accountInfo.name,
           lastName: accountInfo.lastName,

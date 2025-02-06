@@ -87,7 +87,7 @@ export async function deletePet(id) {
   return { message: "Pet deleted successfully" };
 }
 
-export async function getAllPetsByVet() {
+export async function getAllPetsByVet(vetId) {
   try {
     const token = localStorage.getItem("access-token");
     const storedId = localStorage.getItem("access-id");
@@ -96,7 +96,7 @@ export async function getAllPetsByVet() {
       throw new Error("No access token found");
     }
 
-    const response = await fetch(`${api}/pets/vet/${storedId}`, {
+    const response = await fetch(`${api}/pets/vet/${vetId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
