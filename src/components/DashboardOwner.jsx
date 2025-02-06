@@ -57,9 +57,19 @@ export default function DashboardOwner() {
     <DashboardLayout>
       <main className="bg-gray-100 ml-20 p-8 grid gap-4 grid-cols-1 lg:grid-cols-12 ">
         <div className="grid grid-cols-subgrid gap-4 md:grid-cols-2  lg:col-span-3 xl:col-span-2 lg:grid-cols-1 ">
-          <div className="h-44 lg:h-96 bg-white shadow-md rounded-2xl p-6">
-            <h2 className="text-congress-950">{account.name}</h2>
-          </div>
+          <section className="h-44 lg:h-96 bg-white shadow-md rounded-2xl p-6">
+            <div className="w-full flex justify-center">
+              <img
+                src={account.profilePic}
+                alt={`${account.name} ${account.lastName}`}
+                className="h-64 rounded-md"
+              />
+            </div>
+            <h2 className="text-congress-950 text-center mt-4">
+              {account.name} {account.lastName}
+            </h2>
+            <p className="text-center text-gray-600">{account.email}</p>
+          </section>
           <section className="min-h-16 lg:min-h-80 bg-white shadow-md rounded-2xl p-6">
             <header className="text-congress-700 flex flex-col items-center justify-center gap-3">
               <MdCalendarToday className="h-8 w-8" />
