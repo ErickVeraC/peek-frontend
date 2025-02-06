@@ -25,15 +25,12 @@ export default function PetDate(props) {
         </div>
       </div>
 
-      <div className="p-2 text-black text-sm flex flex-col items-end justify-center lg:flex-row lg:justify-start lg:gap-2">
-        <img
-          src="https://randomuser.me/api/portraits/women/44.jpg"
-          alt=""
-          className="rounded-full size-10"
-        />
+      <div className="px-3 py-2 text-black text-sm flex flex-col items-end justify-center lg:flex-row lg:justify-start lg:gap-2">
         <div>
-          <h2>Aitana Dayami</h2>
-          <p>+52 33 2112 5668</p>
+          <h2>{props.reason}</h2>
+          <p>
+            {props.type} - {props.breed}{" "}
+          </p>
         </div>
       </div>
     </div>
