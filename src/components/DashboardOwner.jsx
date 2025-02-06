@@ -46,9 +46,18 @@ export default function DashboardOwner() {
     setCurrentPage(newPage);
   };
 
+  const today = new Date();
+  const filteredAppointments = appointments.filter(
+    (appointment) => new Date(appointment.date) >= today
+  );
+
+  const sortedAppointments = filteredAppointments.sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
+
   const indexOfLastAppointment = currentPage * appointmentsPerPage;
   const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
-  const currentAppointments = appointments.slice(
+  const currentAppointments = sortedAppointments.slice(
     indexOfFirstAppointment,
     indexOfLastAppointment
   );
