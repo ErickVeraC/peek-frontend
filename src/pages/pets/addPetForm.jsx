@@ -14,14 +14,15 @@ import PrimaryButton from "@/components/PrimaryButton";
 import { getAllVets } from "../api/services/vets/Vet";
 
 const schema = yup.object().shape({
-  name: yup
-    .string()
-    .required("Name is required")
-    .min(2, "Name must be at least 2 characters"),
-  birthday: yup.date().required("Birthday is required"),
-  typeAnimal: yup.string().required("Type of animal is required"),
-  breed: yup.string().required("Breed is required"),
-  picture: yup.string().required("Picture URL is required"),
+  name: yup.string().required("Nombre requerido").min(2, "Nombre muy corto"),
+  birthday: yup
+    .date()
+    .required("Dia de nacimiento requerido")
+    .typeError("Seleccione una fecha"),
+  typeAnimal: yup.string().required("Escriba el tipo de mascota"),
+  breed: yup.string().required("Escriba la raza de la mascota"),
+  picture: yup.string().required("Seleccione una imagen"),
+  vet: yup.string().required("Selecciona un veterinario"),
 });
 
 export default function AddPetForm({ onClose, onPetAdded }) {
@@ -91,94 +92,107 @@ export default function AddPetForm({ onClose, onPetAdded }) {
         </h2>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-full flex flex-col gap-4 mt-4"
+          className="w-full flex flex-col gap-2 mt-4"
         >
-          <label className="w-full text-left text-congress-950">Name</label>
-          <input
-            type="text"
-            {...register("name")}
-            className={clsx(
-              "w-full rounded-md border border-gray-200 p-2 text-congress-950",
-              {
-                "border-red-500": errors.name,
-              }
+          <div>
+            <label className="w-full text-left text-congress-950">Nombre</label>
+            <input
+              type="text"
+              {...register("name")}
+              className={clsx(
+                "w-full rounded-md border border-gray-200 p-2 text-congress-950",
+                {
+                  "border-red-500": errors.name,
+                }
+              )}
+            />
+            {errors.name && (
+              <span className="text-red-500">{errors.name.message}</span>
             )}
-          />
-          {errors.name && (
-            <span className="text-red-500">{errors.name.message}</span>
-          )}
+          </div>
 
-          <label className="w-full text-left text-congress-950">Vet</label>
-          <select
-            {...register("vet")}
-            className={clsx(
-              "w-full rounded-md border border-gray-200 p-2 text-congress-950",
-              {
-                "border-red-500": errors.vet,
-              }
+          <div>
+            <label className="w-full text-left text-congress-950">
+              Veterinario
+            </label>
+            <select
+              {...register("vet")}
+              className={clsx(
+                "w-full rounded-md border border-gray-200 p-2 text-congress-950",
+                {
+                  "border-red-500": errors.vet,
+                }
+              )}
+            >
+              <option value="">Veterinario</option>
+              {vets.map((vet) => (
+                <option key={vet._id} value={vet._id}>
+                  {vet.user.name} {vet.user.lastName}
+                </option>
+              ))}
+            </select>
+            {errors.vet && (
+              <span className="text-red-500">{errors.vet.message}</span>
             )}
-          >
-            <option value="">Select a vet</option>
-            {vets.map((vet) => (
-              <option key={vet._id} value={vet._id}>
-                {vet.user.name} {vet.user.lastName}
-              </option>
-            ))}
-          </select>
-          {errors.vet && (
-            <span className="text-red-500">{errors.vet.message}</span>
-          )}
+          </div>
 
-          <label className="w-full text-left text-congress-950">Birthday</label>
-          <input
-            type="date"
-            {...register("birthday")}
-            className={clsx(
-              "w-full rounded-md border border-gray-200 p-2 text-congress-950",
-              {
-                "border-red-500": errors.birthday,
-              }
+          <div>
+            <label className="w-full text-left text-congress-950">
+              Nacimiento
+            </label>
+            <input
+              type="date"
+              {...register("birthday")}
+              className={clsx(
+                "w-full rounded-md border border-gray-200 p-2 text-congress-950",
+                {
+                  "border-red-500": errors.birthday,
+                }
+              )}
+            />
+            {errors.birthday && (
+              <span className="text-red-500">{errors.birthday.message}</span>
             )}
-          />
-          {errors.birthday && (
-            <span className="text-red-500">{errors.birthday.message}</span>
-          )}
+          </div>
 
-          <label className="w-full text-left text-congress-950">
-            Type of Animal
-          </label>
-          <input
-            type="text"
-            {...register("typeAnimal")}
-            className={clsx(
-              "w-full rounded-md border border-gray-200 p-2 text-congress-950",
-              {
-                "border-red-500": errors.typeAnimal,
-              }
-            )}
-          />
-          {errors.typeAnimal && (
-            <span className="text-red-500">{errors.typeAnimal.message}</span>
-          )}
+          <div className="flex flex-row gap-3">
+            <div>
+              <label className="w-full text-left text-congress-950">Tipo</label>
+              <input
+                type="text"
+                {...register("typeAnimal")}
+                className={clsx(
+                  "w-full rounded-md border border-gray-200 p-2 text-congress-950",
+                  {
+                    "border-red-500": errors.typeAnimal,
+                  }
+                )}
+              />
+              {errors.typeAnimal && (
+                <span className="text-red-500">
+                  {errors.typeAnimal.message}
+                </span>
+              )}
+            </div>
+            <div>
+              <label className="w-full text-left text-congress-950">Raza</label>
+              <input
+                type="text"
+                {...register("breed")}
+                className={clsx(
+                  "w-full rounded-md border border-gray-200 p-2 text-congress-950",
+                  {
+                    "border-red-500": errors.breed,
+                  }
+                )}
+              />
+              {errors.breed && (
+                <span className="text-red-500">{errors.breed.message}</span>
+              )}
+            </div>
+          </div>
 
-          <label className="w-full text-left text-congress-950">Breed</label>
-          <input
-            type="text"
-            {...register("breed")}
-            className={clsx(
-              "w-full rounded-md border border-gray-200 p-2 text-congress-950",
-              {
-                "border-red-500": errors.breed,
-              }
-            )}
-          />
-          {errors.breed && (
-            <span className="text-red-500">{errors.breed.message}</span>
-          )}
-
-          <label className="w-full text-left text-congress-950">
-            Picture URL
-          </label>
+          <label className="w-full text-left text-congress-950">Imagen </label>
           <label className="w-full text-left text-congress-950">
             Sube una foto
           </label>

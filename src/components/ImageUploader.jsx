@@ -45,14 +45,14 @@ export default function ImageUploader({ onUpload }) {
     <>
       <div className="container">
         {uppy && (
-          <>
-            <Dashboard uppy={uppy} height={300} />
+          <div className=" flex flex-row gap-5">
+            <Dashboard uppy={uppy} height={100} className="max-w-60" />
             {imageUrl && (
-              <div className="image">
-                <img src={imageUrl} alt="Uploaded" />
+              <div className="image max-w-16">
+                <img src={imageUrl} height={500} alt="Uploaded" />
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
     </>
