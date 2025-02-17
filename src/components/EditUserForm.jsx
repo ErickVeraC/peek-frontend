@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "sonner";
 import { useState } from "react";
-import { MdClose } from "react-icons/md";
+import { MdClose, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import PrimaryButton from "@/components/PrimaryButton";
 import ImageUploader from "@/components/ImageUploader";
 import { updateUser } from "@/pages/api/services/users/User";
@@ -27,6 +27,8 @@ const schema = yup.object().shape({
 
 export default function EditUserForm({ handleModal, user = {}, setUser }) {
   const [loading, setLoading] = useState(false);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const {
     register,
@@ -152,16 +154,29 @@ export default function EditUserForm({ handleModal, user = {}, setUser }) {
           <label className="w-full text-left text-congress-950">
             Contraseña actual
           </label>
-          <input
-            type="password"
-            {...register("oldPassword")}
-            className={clsx(
-              "w-full rounded-md border border-gray-200 p-2 text-congress-950",
-              {
-                "border-red-500": errors.oldPassword,
-              }
-            )}
-          />
+          <div className="relative">
+            <input
+              type={showOldPassword ? "text" : "password"}
+              {...register("oldPassword")}
+              className={clsx(
+                "w-full rounded-md border border-gray-200 p-2 text-congress-950",
+                {
+                  "border-red-500": errors.oldPassword,
+                }
+              )}
+            />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+              onClick={() => setShowOldPassword(!showOldPassword)}
+            >
+              {showOldPassword ? (
+                <MdVisibilityOff className="text-congress-950" />
+              ) : (
+                <MdVisibility className="text-congress-950" />
+              )}
+            </button>
+          </div>
           {errors.oldPassword && (
             <span className="text-red-500">{errors.oldPassword.message}</span>
           )}
@@ -169,16 +184,29 @@ export default function EditUserForm({ handleModal, user = {}, setUser }) {
           <label className="w-full text-left text-congress-950">
             Nueva contraseña
           </label>
-          <input
-            type="password"
-            {...register("password")}
-            className={clsx(
-              "w-full rounded-md border border-gray-200 p-2 text-congress-950",
-              {
-                "border-red-500": errors.password,
-              }
-            )}
-          />
+          <div className="relative">
+            <input
+              type={showNewPassword ? "text" : "password"}
+              {...register("password")}
+              className={clsx(
+                "w-full rounded-md border border-gray-200 p-2 text-congress-950",
+                {
+                  "border-red-500": errors.password,
+                }
+              )}
+            />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+              onClick={() => setShowNewPassword(!showNewPassword)}
+            >
+              {showNewPassword ? (
+                <MdVisibilityOff className="text-congress-950" />
+              ) : (
+                <MdVisibility className="text-congress-950" />
+              )}
+            </button>
+          </div>
           {errors.password && (
             <span className="text-red-500">{errors.password.message}</span>
           )}
