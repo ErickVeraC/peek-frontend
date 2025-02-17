@@ -76,7 +76,7 @@ export default function Header() {
                 id="menu-item-0"
                 onClick={handleModal}
               >
-                Account settings
+                Actualiza tu informacion
               </a>
               <a
                 href="#"

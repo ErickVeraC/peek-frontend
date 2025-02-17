@@ -73,13 +73,13 @@ export default function EditUserForm({ handleModal, user = {}, setUser }) {
           <MdClose className="text-2xl m-auto text-congress-950" />
         </button>
         <h2 className="text-congress-950 text-2xl text-center mb-4">
-          Edit User Data
+          Edita tus datos
         </h2>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="w-full flex flex-col gap-4 mt-4"
         >
-          <label className="w-full text-left text-congress-950">Name</label>
+          <label className="w-full text-left text-congress-950">Nombre</label>
           <input
             type="text"
             {...register("name")}
@@ -94,9 +94,7 @@ export default function EditUserForm({ handleModal, user = {}, setUser }) {
             <span className="text-red-500">{errors.name.message}</span>
           )}
 
-          <label className="w-full text-left text-congress-950">
-            Last Name
-          </label>
+          <label className="w-full text-left text-congress-950">Apellido</label>
           <input
             type="text"
             {...register("lastName")}
@@ -111,7 +109,9 @@ export default function EditUserForm({ handleModal, user = {}, setUser }) {
             <span className="text-red-500">{errors.lastName.message}</span>
           )}
 
-          <label className="w-full text-left text-congress-950">Birthday</label>
+          <label className="w-full text-left text-congress-950">
+            Fecha de nacimiento
+          </label>
           <input
             type="date"
             {...register("birthday")}
@@ -142,7 +142,7 @@ export default function EditUserForm({ handleModal, user = {}, setUser }) {
           )}
 
           <label className="w-full text-left text-congress-950">
-            Profile Picture
+            Foto de perfil
           </label>
           <ImageUploader onUpload={handleImageUpload} />
           {errors.profilePic && (
@@ -150,7 +150,7 @@ export default function EditUserForm({ handleModal, user = {}, setUser }) {
           )}
 
           <label className="w-full text-left text-congress-950">
-            Current Password
+            Contraseña actual
           </label>
           <input
             type="password"
@@ -167,7 +167,7 @@ export default function EditUserForm({ handleModal, user = {}, setUser }) {
           )}
 
           <label className="w-full text-left text-congress-950">
-            New Password
+            Nueva contraseña
           </label>
           <input
             type="password"
@@ -183,7 +183,10 @@ export default function EditUserForm({ handleModal, user = {}, setUser }) {
             <span className="text-red-500">{errors.password.message}</span>
           )}
 
-          <PrimaryButton label="Update User Data" isSubmitting={loading} />
+          <PrimaryButton
+            label="Actualiza tu informacion"
+            isSubmitting={loading}
+          />
         </form>
       </div>
     </section>
