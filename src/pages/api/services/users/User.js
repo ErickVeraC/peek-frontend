@@ -83,7 +83,7 @@ export async function updateUser(id, userData) {
 
   try {
     const response = await fetch(`${api}/users/${id}`, {
-      method: "PUT",
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

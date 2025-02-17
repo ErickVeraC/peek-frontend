@@ -10,6 +10,8 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  console.log("Account data:", account);
+
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const closeMenu = (e) => {
@@ -100,7 +102,7 @@ export default function Header() {
       {isModalOpen && (
         <EditUserForm
           handleModal={handleModal}
-          user={account}
+          user={{ ...account, id: account.roleInfo.user }}
           setUser={setAccount}
         />
       )}
