@@ -74,3 +74,32 @@ export async function loginUser(email, password) {
     throw error;
   }
 }
+
+export async function updateUser(id, userData) {
+  const token = localStorage.getItem("access-token");
+  if (!token) {
+    throw new Error("No access token found");
+  }
+
+  try {
+    const response = await fetch(`${api}/users/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(userData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errorMessage = data.message || "Error.";
+      throw new Error(errorMessage);
+    }
+    return data;
+  } catch (error) {
+    console.error("Error updating user:", error.message);
+    throw error;
+  }
+}
