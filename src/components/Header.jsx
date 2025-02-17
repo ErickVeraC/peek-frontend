@@ -3,11 +3,14 @@ import { PiBellLight, PiCaretDownLight } from "react-icons/pi";
 import { useAccount } from "@/context/AccountContext";
 import Avatar from "@/components/Avatar";
 import clsx from "clsx";
+import EditUserForm from "./EditUserForm";
 
 export default function Header() {
-  const { account } = useAccount();
-
+  const { account, setAccount } = useAccount();
   const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  console.log("Account data:", account);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -25,17 +28,18 @@ export default function Header() {
   }, []);
 
   const handleSignOut = () => {
-    // Eliminar las dos variables del localStorage
     localStorage.removeItem("access-id");
     localStorage.removeItem("access-token");
-
-    // Refrescar la página
     window.location.reload();
+  };
+
+  const handleModal = () => {
+    setIsModalOpen(!isModalOpen);
   };
 
   return (
     <header className="bg-white h-16 w-full">
-      <div className="flex flex-row items-center justify-end gap-8 mr-10 h-full">
+      <section className="flex flex-row items-center justify-end gap-8 mr-10 h-full">
         <PiBellLight className="text-slate-900 size-8" />
 
         <div className="relative inline-block text-left">
@@ -57,7 +61,7 @@ export default function Header() {
             className={clsx(
               "absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none",
               {
-                hidden: !isOpen, // Agrega o quita la clase 'hidden' según el estado
+                hidden: !isOpen,
               }
             )}
             role="menu"
@@ -70,8 +74,9 @@ export default function Header() {
                 role="menuitem"
                 tabIndex="-1"
                 id="menu-item-0"
+                onClick={handleModal}
               >
-                Account settings
+                Actualiza tu informacion
               </a>
               <a
                 href="#"
@@ -93,7 +98,14 @@ export default function Header() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
+      {isModalOpen && (
+        <EditUserForm
+          handleModal={handleModal}
+          user={{ ...account, id: account.roleInfo.user }}
+          setUser={setAccount}
+        />
+      )}
     </header>
   );
 }
