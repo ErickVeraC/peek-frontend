@@ -128,7 +128,7 @@ export default function EditUserForm({ handleModal, user = {}, setUser }) {
             <span className="text-red-500">{errors.birthday.message}</span>
           )}
 
-          <label className="w-full text-left text-congress-950">Phone</label>
+          <label className="w-full text-left text-congress-950">Telefono</label>
           <input
             type="text"
             {...register("phone")}
