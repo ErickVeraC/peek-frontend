@@ -20,7 +20,7 @@ export default function DashboardOwner() {
       return;
     }
 
-    console.log("Fetching all appointments for user:", account.roleInfo.user);
+    //console.log(JSON.stringify(account.roleInfo));
 
     async function fetchAllAppointmentsByOwner() {
       try {
