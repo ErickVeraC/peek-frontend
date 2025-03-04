@@ -16,29 +16,32 @@ export default function PatientsCard() {
     async function fetchPets() {
       try {
         let petsData = await getAllPetsByVet(account.roleInfo._id);
-        for (let pet of petsData) {
-          // Esperamos a obtener el userInfo antes de continuar
-          const userInfo = await getUser(pet.petOwner.user);
-          const accountInfo = userInfo?.data?.user;
-          pet.petOwner = accountInfo;
+
+        console.log(JSON.stringify(petsData));
+        if (!petsData || petsData.length === 0) {
+          console.log("No se encontraron mascotas");
+          setTableData([]);
+          return;
         }
-        //console.log(petsData);
+
         const formattedData = petsData.map((pet) => [
           `<img src="${pet.picture}" alt="Cover" width="50" height="10" class="rounded-full" >`,
-
           pet.name,
           pet.typeAnimal,
           pet.breed,
           pet.birthday.slice(0, 10),
-          pet.petOwner.name + " " + pet.petOwner.lastName,
-          pet.petOwner.phone,
-          pet.petOwner.email,
+          pet.petOwner
+            ? pet.petOwner.name + " " + pet.petOwner.lastName
+            : "No disponible",
+          pet.petOwner.phone ? pet.petOwner.phone : "No disponible",
+          pet.petOwner.email ? pet.petOwner.email : "No disponible",
           `<a class=" px-5 py-1 bg-slate-800 text-white rounded-lg" href="pets/${pet._id}">Ver perfil</a>`,
         ]);
+
         setTableData(formattedData);
-        // alert(JSON.stringify(petsData));
       } catch (error) {
         console.error("Error fetching pets:", error);
+        // Aquí podrías manejar el error de forma más amigable con el usuario (por ejemplo, mostrar un mensaje)
       }
     }
 
