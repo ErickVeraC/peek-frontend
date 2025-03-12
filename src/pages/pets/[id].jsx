@@ -19,6 +19,9 @@ import AddAppointmentForm from "../AddAppointmentForm";
 import AddProcedureForm from "../addProcedureForm";
 import { getPet } from "../api/services/pets/crudPet";
 import SquareButton from "@/components/SquareButton";
+import TableProcedures from "@/components/TableProcedures";
+import { getClinicalProceduresByPet } from "@/pages/api/utils";
+
 import { TbCoffin } from "react-icons/tb";
 
 export default function Mascotas({ pet: initialPet, account: initialAccount }) {
@@ -31,8 +34,26 @@ export default function Mascotas({ pet: initialPet, account: initialAccount }) {
   const [isVaccineModalOpen, setIsVaccineModalOpen] = useState(false);
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
   const [isProcedureModalOpen, setIsProcedureModalOpen] = useState(false);
-
   const { setAccount } = useAccount();
+  const [clinicalProcedures, setClinicalProcedures] = useState([]);
+
+  useEffect(() => {
+    const fetchProcedures = async () => {
+      if (id) {
+        // Verifica si id está disponible antes de hacer la solicitud
+        const procedures = await getClinicalProceduresByPet(id);
+        setClinicalProcedures(procedures || []); // Si no hay procedimientos, ponemos un arreglo vacío
+      }
+    };
+
+    fetchProcedures();
+  }, [id]);
+
+  const updateProcedures = async () => {
+    const procedures = await getClinicalProceduresByPet(id);
+    //alert(JSON.stringify(procedures));
+    setClinicalProcedures(procedures || []); // Si no hay procedimientos, ponemos un arreglo vacío
+  };
 
   useEffect(() => {
     const storedId = localStorage.getItem("access-id");
@@ -77,6 +98,7 @@ export default function Mascotas({ pet: initialPet, account: initialAccount }) {
 
   const handleProcedureModal = () => {
     setIsProcedureModalOpen(!isProcedureModalOpen);
+    updateProcedures();
   };
 
   const handleAppointmentModal = () => {
@@ -94,7 +116,7 @@ export default function Mascotas({ pet: initialPet, account: initialAccount }) {
 
   const handleVaccineAdded = async (newVaccine) => {
     try {
-      alert("Agregar accion despues de registrar vacuna");
+      // alert("Agregar accion despues de registrar vacuna");
       /*
       const updatedVaccines = await addVaccine(pet._id, newVaccine);
       setVaccines(updatedVaccines);*/
@@ -200,12 +222,20 @@ export default function Mascotas({ pet: initialPet, account: initialAccount }) {
                 <Calendar petId={id} />
               </div>
             </div>
-            <div className="w-full bg-white shadow-md rounded-2xl p-9 ">
-              <div className="flex flex-col items-center justify-center gap-3">
-                <MdOutlineMedicalServices className="h-8 w-8 text-congress-700" />
-                <span className="text-neutral-700 text-xs">
-                  Historial Médico.
+            <div className="w-full bg-white shadow-md rounded-2xl p-9 flex flex-col gap-3">
+              <div className="flex flex-row items-center justify-center gap-3">
+                <MdOutlineMedicalServices className=" size-6 text-congress-700 font-bold" />
+                <span className="text-neutral-700 text-md font-bold">
+                  Historial Médico
                 </span>
+                <button onClick={updateProcedures}>Reiniciar contador</button>
+                <div></div>
+              </div>
+              <div className="flex flex-col gap-4">
+                <TableProcedures
+                  petId={id}
+                  procedures={clinicalProcedures}
+                ></TableProcedures>
               </div>
             </div>
 

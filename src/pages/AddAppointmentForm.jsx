@@ -118,9 +118,11 @@ export default function AddAppointmentForm({
           )}
 
           <div className="flex justify-end">
-            <PrimaryButton type="submit" loading={loading}>
-              {loading ? "Creating..." : "Create Appointment"}
-            </PrimaryButton>
+            <PrimaryButton
+              type="submit"
+              loading={loading}
+              label={" Registrar vacuna"}
+            ></PrimaryButton>
           </div>
         </form>
       </div>
