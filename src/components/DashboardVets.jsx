@@ -40,7 +40,7 @@ export default function DashboardVets() {
           <img
             src={account.profilePic}
             alt=""
-            className="rounded-lg max-h-52"
+            className="rounded-lg max-h-52 object-cover w-full"
           />
           <div className="text-black flex flex-col w-full justify-start ">
             <h2 className="font-semibold text-sm sm:text-2xl lg:text-2xl">

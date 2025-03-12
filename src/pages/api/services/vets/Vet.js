@@ -2,11 +2,6 @@ const api = process.env.NEXT_PUBLIC_API_URL;
 
 export async function createVet(vetData) {
   try {
-    const token = localStorage.getItem("access-token");
-    if (!token) {
-      throw new Error("No access token found");
-    }
-
     const response = await fetch(`${api}/vets`, {
       method: "POST",
       headers: {
