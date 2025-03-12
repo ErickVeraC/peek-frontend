@@ -126,7 +126,7 @@ export default function AddProcedureForm({ petId, onClose, onVaccineAdded }) {
             className="bg-slate-900 text-white px-4 py-2 rounded-md w-full"
             disabled={loading}
           >
-            {loading ? "Creating..." : "Registrar vacuna"}
+            {loading ? "Creating..." : "Registrar procedimiento"}
           </button>
         </form>
       </div>

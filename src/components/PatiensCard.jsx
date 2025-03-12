@@ -50,7 +50,6 @@ export default function PatientsCard() {
 
   return (
     <div className="text-black bg-white rounded-2xl shadow-lg min-h-6 overflow-x-auto w-full p-5">
-      <h2 className="text-black">Mascotas</h2>
       <DataTable data={tableData} className="display text-center">
         <thead className="border border-gray-300 p-2">
           <tr>

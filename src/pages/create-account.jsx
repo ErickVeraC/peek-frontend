@@ -39,7 +39,7 @@ export default function Login() {
   async function onSubmit(data) {
     let role = 0;
     isVet ? (role = 0) : (role = 1);
-    alert(role);
+    //alert(role);
     try {
       setIsSubmitting(true);
       const user = await createUser({

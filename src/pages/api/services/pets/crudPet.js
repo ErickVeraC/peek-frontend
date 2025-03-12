@@ -118,3 +118,37 @@ export async function getAllPetsByVet(vetId) {
     throw error;
   }
 }
+
+export async function getClinicalProcedures(petId) {
+  try {
+    const token = localStorage.getItem("access-token");
+    const storedId = localStorage.getItem("access-id");
+
+    if (!token) {
+      throw new Error("No access token found");
+    }
+
+    const response = await fetch(`${api}/clinicalProcedures`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    });
+    const data = await response.json();
+    //alert(JSON.stringify(data));
+    if (!response.ok) {
+      const errorMessage =
+        data.message || "Error fetching clinical procedures.";
+      throw new Error(errorMessage);
+    }
+    // Actualizar el token en localStorage si se proporciona un nuevo token
+    if (data.newToken) {
+      localStorage.setItem("access-token", data.newToken);
+    }
+    return data.data.clinicalProcedures;
+  } catch (error) {
+    console.error("Error getAllPets:", error.message);
+    throw error;
+  }
+}
