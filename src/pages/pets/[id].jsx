@@ -228,8 +228,6 @@ export default function Mascotas({ pet: initialPet, account: initialAccount }) {
                 <span className="text-neutral-700 text-md font-bold">
                   Historial Médico
                 </span>
-                <button onClick={updateProcedures}>Reiniciar contador</button>
-                <div></div>
               </div>
               <div className="flex flex-col gap-4">
                 <TableProcedures

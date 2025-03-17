@@ -4,7 +4,7 @@ import { MdOutlinePets } from "react-icons/md";
 
 export default function Branding() {
   return (
-    <article className="relative w-full h-48 md:h-96">
+    <article className="relative w-full h-48 md:h-[36rem]">
       <Image
         src="/ImagenBranding.png"
         alt="perro en caja"
@@ -13,7 +13,7 @@ export default function Branding() {
         className="h-full object-cover"
         priority
       />
-      <section className="absolute top-0 left-0 w-full h-full grid grid-cols-12 md:grid-cols-8 pt-3 pl-8 md:pl-8">
+      <section className="absolute top-8 left-0 w-full h-full grid grid-cols-12 md:grid-cols-8 pt-3 pl-8 md:pl-8">
         <div className="col-span-12 md:col-span-3 md:p-4">
           <h1 className="text-congress-950 text-5xl md:text-128px font-black">
             peek

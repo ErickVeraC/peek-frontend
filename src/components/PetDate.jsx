@@ -16,7 +16,7 @@ export default function PetDate(props) {
         alt=""
         className="h-full max-w-20 rounded-l-2xl lg:max-w-64 lg:rounded-t-2xl object-cover "
       />
-      <div className="p-2 mt-5 text-black text-sm flex flex-col items-start justify-start lg:flex-row lg:justify-between lg:items-end lg:-mt-[70px] lg:text-white bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent">
+      <div className="p-2 mt-5 text-black text-sm flex flex-col items-start justify-start lg:flex-row lg:justify-between lg:items-end lg:-mt-[70px] lg:text-white bg-gradient-to-t from-slate-900 via-slate-900/85 to-transparent">
         <h2 className="font-bold lg:text-xl">{formattedDate}</h2>
 
         <div className="h-14 flex flex-col justify-end">
