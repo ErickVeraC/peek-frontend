@@ -22,7 +22,7 @@ export default function Navbar() {
           </button>
         </div>
         <div className="hidden flex-col justify-center md:flex">
-          <p className="text-black">Peek Logo</p>
+          <img src="/logo.png" className="size-11" alt="" />
         </div>
         <div className="col-span-3 hidden justify-center gap-16 font-bold text-[#0E2139] xl:flex">
           <button>Veterinarios</button>

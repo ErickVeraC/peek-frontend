@@ -121,7 +121,7 @@ export default function AddAppointmentForm({
             <PrimaryButton
               type="submit"
               loading={loading}
-              label={" Registrar vacuna"}
+              label={" Registrar cita"}
             ></PrimaryButton>
           </div>
         </form>
